@@ -1,0 +1,159 @@
+.club-logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .club-logo {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+  
+  .categoria-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .btn-categoria {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .btn-categoria.selected {
+    border-color: #00bfff;
+    background-color: #e0f7ff;
+  }
+  
+  .btn-categoria:hover {
+    background-color: #d8e8ff;
+  }
+  
+  .categoria-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+    object-fit: contain;
+  }
+  
+/**/
+
+ .categoria-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .btn-categoria {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .btn-categoria.selected {
+    border-color: #00bfff;
+    background-color: #e0f7ff;
+  }
+
+  .btn-categoria:hover {
+    background-color: #d8e8ff;
+  }
+
+  .categoria-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+    object-fit: contain;
+  }
+
+  .color-grid {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    max-width: 880px;
+    background-color: transparent;
+  }
+
+  .color-item {
+    position: relative;
+    width: calc(25% - 10px);
+    height: 50px;
+    background-color: transparent;
+  }
+
+
+  .color-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    background-color: transparent;
+  }
+
+  .color-image.selected {
+    border: 2px solid rgb(9, 255, 0);
+  }
+
+  .club-logo-overlay {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: auto;
+    pointer-events: none;
+
+  }
+
+ .color-container {
+  border: 2px solid black;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;  /* Ajusta el contenedor para que ocupe el 100% disponible */
+  box-sizing: border-box;  /* Evita que el padding afecte el tamaño total */
+  background-color: transparent;
+}
+
+  .invisible-buttons .btn-categoria {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  .titulo-centrado {
+    text-align: center;
+}
+
+
+
+
+
+

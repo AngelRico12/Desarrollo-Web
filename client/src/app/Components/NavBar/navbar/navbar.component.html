@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/inicio">Liga Deportiva</a>
+    <a class="navbar-brand" href="/Rclub">Registrar equipo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <!-- Mostrar botón de inicio de sesión si no hay usuario -->
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link" routerLink="/login">Iniciar Sesión</a>
+        </li>
+
+        <!-- Mostrar nombre del usuario y el botón de cerrar sesión -->
+        <li class="nav-item" *ngIf="isLoggedIn" class="d-flex align-items-center">
+          <span class="nav-link" style="margin-right: 10px;">{{ usuario?.nombre }}</span>
+          <button class="btn btn-outline-danger" (click)="logout()">Cerrar Sesión</button>
+        </li>
+      </ul>
+    </div>
+</nav>
