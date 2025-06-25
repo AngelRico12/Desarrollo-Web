@@ -1,77 +1,147 @@
-<div class="d-flex justify-content-center align-items-center vh-100" style="background-image: url('assets/fondoAdmin.png'); background-size: cover; background-position: center;">
-  <div class="container" style="max-width: 400px; background-color: rgba(51, 51, 51, 0.9); padding: 20px; border-radius: 8px; color: #f5f5f5;">
+<div class="d-flex justify-content-center align-items-center vh-100" style="background-image: url('assets/Design.png'); background-size: cover; background-position: center;">
+  <div class="register-club-container">
 
-<div class="register-club-container">
-  <h2>Registrar un Nuevo Club</h2>
-
-
-
-  
-  <form (ngSubmit)="onSubmit()">
-    <!-- Nombre del Club -->
-    <div class="form-group">
-      <label for="nombre">Nombre del Club</label>
-      <input
-        type="text"
-        id="nombre"
-        [(ngModel)]="nombre"
-        name="nombre"
-        class="form-control"
-        required
-        placeholder="Ingrese el nombre del club"
-      />
+    <!-- Título -->
+    <div class="header text-center mb-4">
+      Registrar Nuevo Club
     </div>
 
-    <!-- Correo Electrónico -->
-    <div class="form-group">
-      <label for="correo">Correo Electrónico</label>
-      <input
-        type="email"
-        id="correo"
-        [(ngModel)]="correo"
-        name="correo"
-        class="form-control"
-        required
-        placeholder="Ingrese el correo electrónico"
-        style="color: black;"
-      />
-    </div>
+    <form (ngSubmit)="onSubmit()">
+      <!-- Nombre del Club -->
+      <div class="form-group input-icon">
+        <i class="fas fa-futbol"></i>
+        <label for="nombre">Nombre del Club</label>
+        <input
+          type="text"
+          id="nombre"
+          [(ngModel)]="nombre"
+          name="nombre"
+          class="form-control"
+          required
+          placeholder="Ej. Tigres F.C."
+        />
+      </div>
 
-    <!-- Certificado -->
-    <div class="form-group">
-      <label for="certificado">Certificado</label>
-      <input
-        type="file"
-        id="certificado"
-        (change)="onCertificadoChange($event)"
-        class="form-control"
-        required
-      />
-      <small class="form-text text-muted">Por favor, adjunte el certificado del club.</small>
-    </div>
+      <!-- Correo -->
+      <div class="form-group input-icon">
+        <i class="fas fa-envelope"></i>
+        <label for="correo">Correo Electrónico</label>
+        <input
+          type="email"
+          id="correo"
+          [(ngModel)]="correo"
+          name="correo"
+          class="form-control"
+          required
+          placeholder="club@correo.com"
+        />
+      </div>
 
-    <!-- Logotipo -->
-    <div class="form-group">
-      <label for="logotipo">Logotipo</label>
-      <input
-        type="file"
-        id="logotipo"
-        (change)="onLogotipoChange($event)"
-        class="form-control"
-        required
-      />
-      <small class="form-text text-muted">Por favor, adjunte el logotipo del club.</small>
-    </div>
+      <!-- Certificado -->
+      <div class="form-group input-icon">
+        <i class="fas fa-file-alt"></i>
+        <label for="certificado">Certificado</label>
+        <input
+          type="file"
+          id="certificado"
+          (change)="onCertificadoChange($event)"
+          class="form-control"
+          required
+        />
+        <small class="form-text text-muted">Adjunte el certificado del club.</small>
+      </div>
 
-    <!-- Botón para Registrar -->
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="!nombre || !correo || !certificado || !logotipo"
-    >
-      Registrar Club
-    </button>
-  </form>
+      <!-- Logotipo -->
+      <div class="form-group input-icon">
+        <i class="fas fa-image"></i>
+        <label for="logotipo">Logotipo</label>
+        <input
+          type="file"
+          id="logotipo"
+          (change)="onLogotipoChange($event)"
+          class="form-control"
+          required
+        />
+        <small class="form-text text-muted">Adjunte el logotipo del club.</small>
+      </div>
+
+      <!-- Botón Registrar -->
+      <button
+        type="submit"
+        class="btn-register w-100 mt-4"
+        [disabled]="!nombre || !correo || !certificado || !logotipo"
+      >
+        Registrar Club
+      </button>
+    </form>
+  </div>
 </div>
 
+<style>
+    .register-club-container {
+    max-width: 420px;
+    width: 100%;
+    background: linear-gradient(to bottom right, rgba(34, 34, 34, 0.95), rgba(51, 0, 0, 0.95));
+    padding: 35px 30px;
+    border-radius: 16px;
+    border: 1px solid rgba(128, 0, 0, 0.5);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+    color: #f5f5f5;
+    backdrop-filter: blur(8px);
+  }
 
+  .header {
+    background: (#b30000);
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    font-size: 20px;
+    text-transform: uppercase;
+    border-radius: 6px;
+  }
+
+  .form-text.text-muted {
+  color: #dddddd !important; /* Color más claro para buena visibilidad */
+  font-size: 0.85rem;
+}
+
+  .input-icon {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .input-icon i {
+    position: absolute;
+    top: 36px;
+    left: 10px;
+    color: #b30000;
+    font-size: 16px;
+  }
+  .form-control {
+    padding-left: 35px;
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #666;
+    height: 45px;
+  }
+  .form-control:focus {
+    background-color: #555;
+    border-color: #800000;
+    box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.25);
+  }
+
+  /* Botón Registrar */
+  .btn-register {
+    background-color: #800000;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+  }
+  .btn-register:hover {
+    background-color: #a00000;
+  }
+
+</style>
