@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
+import API_URL from 'src/apiConfig';
+
 @Component({
   selector: 'app-equipo',
   templateUrl: './equipo.component.html',
@@ -9,6 +11,9 @@ import { HttpClient } from '@angular/common/http';
   standalone: false
 })
 export class EquipoComponent {
+
+  API_URL = API_URL;
+
   facebookLink: string | null = null;
   instagramLink: string | null = null;
   
@@ -204,7 +209,7 @@ export class EquipoComponent {
     const nombreUsuario = usuarioObj.nombre;
 
     // Obtener la URL de la API con el nombre de usuario
-    const apiUrl = `http://localhost:3000/api/Ecategoria/equipoXU/${nombreUsuario}`;
+    const apiUrl = `${this.API_URL}/api/Ecategoria/equipoXU/${nombreUsuario}`;
     
     this.http.get<{ success: boolean, equipo: any, mensaje: string }>(apiUrl).subscribe(
       (response) => {
@@ -231,7 +236,7 @@ export class EquipoComponent {
     }
   
     const id_equipo = this.jugador.id_equipo; // Obtener el id_equipo del objeto jugador
-    const apiUrl = `http://localhost:3000/api/Ecategoria/equipoCompleto/${id_equipo}`;
+    const apiUrl = `${this.API_URL}/api/Ecategoria/equipoCompleto/${id_equipo}`;
   
     this.http.get<{ success: boolean; valido: boolean }>(apiUrl).subscribe(
       (response) => {
@@ -263,7 +268,7 @@ export class EquipoComponent {
   
 
   verificarEstadoEquipo(idEquipo: number): void {
-    const apiEstadoUrl = `http://localhost:3000/api/Ecategoria/estadoEquipo/${idEquipo}`;
+    const apiEstadoUrl = `${this.API_URL}/api/Ecategoria/estadoEquipo/${idEquipo}`;
     this.http.get<{ success: boolean; esPendiente: boolean }>(apiEstadoUrl).subscribe(
       (response) => {
         console.log('Estado recibido:', response);
@@ -298,7 +303,7 @@ export class EquipoComponent {
     // Obtener el nombre del club directamente del objeto usuario
     this.nombre_club = usuarioObj.nombre;
   
-    const apiUrl = `http://localhost:3000/api/Ecategoria/categoria-usuario/${nombre}`;
+    const apiUrl = `${this.API_URL}/api/Ecategoria/categoria-usuario/${nombre}`;
     this.http.get<{ categoria: string }>(apiUrl).subscribe(
 
       (response) => {
@@ -331,7 +336,7 @@ export class EquipoComponent {
     }
   
     posiciones.forEach((posicion) => {
-      const apiUrl = `http://localhost:3000/uploads/${this.nombre_club}/fotos/${this.categoria}/${posicion}/foto.png`;
+      const apiUrl = `${this.API_URL}/uploads/${this.nombre_club}/fotos/${this.categoria}/${posicion}/foto.png`;
   
       this.http.get(apiUrl, { responseType: 'blob' }).subscribe(
         (response) => {
@@ -350,7 +355,7 @@ export class EquipoComponent {
   verificarPosicionOcupada(): void {
     this.obtenerIdUsuarioYHacerSolicitud();
    
-    const apiUrl = `http://localhost:3000/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
+    const apiUrl = `${this.API_URL}/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
     
     this.http.get<{ 
       success: boolean; 
@@ -390,8 +395,8 @@ export class EquipoComponent {
     musica_favorita?: string,
     redes_sociales?: string
   ): void {
-    const apiUrl = `http://localhost:3000/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
-    const SERVER_URL = 'http://localhost:3000';
+    const apiUrl = `${this.API_URL}/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
+    const SERVER_URL = `${this.API_URL}`;
   
     this.http.get<{
       success: boolean;
@@ -472,7 +477,7 @@ export class EquipoComponent {
         const nombre = usuario.nombre;
 
         // Hacer la solicitud a la API con el id_usuario
-        this.http.get(`http://localhost:3000/api/Ecategoria/id-equipo/${nombre}`).subscribe(
+        this.http.get(`${this.API_URL}/api/Ecategoria/id-equipo/${nombre}`).subscribe(
           (response: any) => {
             console.log('Respuesta de la API:', response);
             // Asignar el id_equipo a this.jugador.id_equipo
@@ -499,7 +504,7 @@ export class EquipoComponent {
  
 
   obtenerCategoria(nombre: string): void {
-    const apiUrl = `http://localhost:3000/api/Ecategoria/categoria-usuario/${nombre}`;
+    const apiUrl = `${this.API_URL}/api/Ecategoria/categoria-usuario/${nombre}`;
     this.http.get<{ categoria: string }>(apiUrl).subscribe(
       (response) => {
         this.jugador.categoria = response.categoria; // Asignar el valor a jugador.categoria
@@ -526,12 +531,12 @@ export class EquipoComponent {
   }
 
   obtenerNombreClub(clubId: number): void {
-    const apiUrl = `http://localhost:3000/api/clubes/${clubId}`;
+    const apiUrl = `${this.API_URL}/api/clubes/${clubId}`;
     this.http.get<{ success: boolean; club: { nombre: string; logotipo: string } }>(apiUrl).subscribe(
       (response) => {
         if (response.success && response.club) {
           const nombreClub = response.club.nombre;
-          this.clubLogoUrl = `http://localhost:3000/uploads/${nombreClub}/logotipo/${nombreClub}.png`;
+          this.clubLogoUrl = `${this.API_URL}/uploads/${nombreClub}/logotipo/${nombreClub}.png`;
           this.jugador.nombreClub = nombreClub; // Asignar el valor a jugador.nombreClub
         } else {
           console.error('Error: Club no encontrado en la respuesta.');
@@ -554,7 +559,7 @@ export class EquipoComponent {
     this.jugador.posicion = this.posicionSeleccionada;
   
     // Verificar si la posición está ocupada antes de abrir el formulario
-    const apiUrl = `http://localhost:3000/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
+    const apiUrl = `${this.API_URL}/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
   
     this.http.get<{ 
       success: boolean; 
@@ -635,7 +640,7 @@ export class EquipoComponent {
     }
     
   
-    const fotoRuta2 = `http://localhost:3000/uploads/${this.jugador.nombreClub}/fotos/${this.jugador.categoria}/${this.jugador.posicion}/${this.fotoArchivo?.name}`;
+    const fotoRuta2 = `${this.API_URL}/uploads/${this.jugador.nombreClub}/fotos/${this.jugador.categoria}/${this.jugador.posicion}/${this.fotoArchivo?.name}`;
     this.jugador.foto = fotoRuta2;  // Asigna la ruta de la foto antes de enviar los datos
     
     const redesSocialesString = `facebook:${this.jugador.redes_sociales.facebook || 'N/A'} - instagram:${this.jugador.redes_sociales.instagram || 'N/A'}`;
@@ -692,11 +697,11 @@ export class EquipoComponent {
     console.log('Amonestaciones:', this.jugador.amonestaciones);
     console.log('Puntos Acumulados:', this.jugador.puntos_acumulados);
     
-    const apiUrl = 'http://localhost:3000/api/juga/Cjugador';
+    const apiUrl = `${this.API_URL}/api/juga/Cjugador`;
     this.http.post(apiUrl, formData).subscribe(
       (response: any) => {
         if (response.success) {
-          const fotoRuta = `http://localhost:3000/uploads/${this.jugador.nombreClub}/fotos/${this.jugador.categoria}/${this.jugador.posicion}/${this.fotoArchivo?.name}`;
+          const fotoRuta = `${this.API_URL}/uploads/${this.jugador.nombreClub}/fotos/${this.jugador.categoria}/${this.jugador.posicion}/${this.fotoArchivo?.name}`;
           this.fotosJugadores[this.posicionSeleccionada] = fotoRuta;
           alert('Jugador registrado exitosamente.');
           this.cerrarFormulario();

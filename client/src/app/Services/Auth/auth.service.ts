@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+import API_URL from 'src/apiConfig';
+
 
 interface Usuario {
   id_usuario: number;
@@ -17,7 +19,7 @@ interface Usuario {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth/login';
+  private apiUrl = `${API_URL}/api/auth/login`;
   private usuario: Usuario | null = null;
 
   constructor(private http: HttpClient) {}

@@ -13,6 +13,7 @@ import EquipoDTRoute from './routes/EquipoDTRoute';
 import ClubesRoutes from './routes/clubesRoutes';
 import categoriaRoute from './routes/categoriaRoute';
 import EquipoJugadorRoute from './routes/EquipoJugadorRoute';
+import recuperaContraRoute from './routes/recuperaContraRoute';
 
 class Server {
     private app: express.Application;
@@ -47,6 +48,7 @@ class Server {
         this.app.use('/api/clubes', ClubesRoutes);
         this.app.use('/api/Ecategoria', categoriaRoute);
         this.app.use('/api/juga', EquipoJugadorRoute);
+        this.app.use('/api/recupera', recuperaContraRoute);
         
 
     }

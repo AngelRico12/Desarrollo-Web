@@ -15,16 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const crypto_1 = require("crypto");
+const apiConfig_1 = __importDefault(require("../../../client/src/apiConfig"));
 class ClubController {
-    // Listar solicitudes de clubes
+    constructor() {
+        // Listar solicitudes de clubes
+        this.API_URL = apiConfig_1.default;
+    }
     static listarSolicitudes(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const solicitudes = yield database_1.default.query('SELECT * FROM club WHERE estado = ?', ['pendiente']);
                 // Ajustar rutas para ser accesibles desde el frontend
                 solicitudes.forEach((club) => {
-                    club.certificado = `http://192.168.43.27:3000${club.certificado.replace(/\\/g, '/')}`;
-                    club.logotipo = `http://192.168.43.27:3000${club.logotipo.replace(/\\/g, '/')}`;
+                    club.certificado = `${apiConfig_1.default}${club.certificado.replace(/\\/g, '/')}`;
+                    club.logotipo = `${apiConfig_1.default}${club.logotipo.replace(/\\/g, '/')}`;
                 });
                 res.status(200).json(solicitudes);
             }
@@ -69,10 +73,10 @@ class ClubController {
         return __awaiter(this, void 0, void 0, function* () {
             const { id_club } = req.params;
             try {
-                const result = yield database_1.default.query('DELETE FROM club WHERE id_club = ?', [id_club]);
+                const [result] = yield database_1.default.query('DELETE FROM club WHERE id_club = ?', [id_club]);
                 if (result.affectedRows === 0) {
                     res.status(404).json({ message: 'Club no encontrado.' });
-                    return;
+                    return; // Termina la ejecución aquí.
                 }
                 res.status(200).json({ message: 'Club eliminado correctamente.' });
             }

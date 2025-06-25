@@ -7,6 +7,8 @@ import { AuthService } from '../../../Services/Auth/auth.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
+import API_URL from 'src/apiConfig';
+
 @Component({
   selector: 'app-administrar',
   templateUrl: './administrar.component.html',
@@ -14,6 +16,9 @@ import { HttpClient } from '@angular/common/http';
   standalone: false
 })
 export class AdministrarComponent implements OnInit {
+
+  API_URL = API_URL;
+
   editMode = false;
   formStep: number = 1;  // Controla en qué parte del formulario estamos
   createTeamForm: FormGroup;
@@ -23,8 +28,8 @@ export class AdministrarComponent implements OnInit {
   categorias: string[] = ['Fútbol', 'Fútbol Americano', 'Tenis', 'Béisbol', 'Básquet'];
   coloresDisponibles: string[] = [
     'azul', 'cafe', 'morado', 'negro', 'rojo', 
-    'turquesa', 'amarillo', 'blanco', 'gris', 
-    'naranja', 'purpura', 'rosa', 'verde'
+    'turquesa', 'amarillo', 'verde', 'gris', 
+    'naranja'
   ];
   colorLocal = '';
   colorVisitante = '';
@@ -79,7 +84,7 @@ export class AdministrarComponent implements OnInit {
   ////////////////
     // Método para verificar si el usuario ya tiene un equipo
     verificarEquipo(nombreUsuario: string): void {
-      const url = `http://localhost:3000/api/Ecategoria/equipo/${nombreUsuario}`;
+      const url = `${this.API_URL}/api/Ecategoria/equipo/${nombreUsuario}`;
     
       this.http.get(url).subscribe(
         (response: any) => {
@@ -121,7 +126,7 @@ export class AdministrarComponent implements OnInit {
   ///////////////////////
 
   verificarEquipos2(clubId: number): void {
-    const apiUrl = `http://localhost:3000/api/team/categorias/${clubId}`;
+    const apiUrl = `${this.API_URL}/api/team/categorias/${clubId}`;
     this.http.get<{ categorias: string[] }>(apiUrl).subscribe(
       (response) => {
         if (response.categorias) {
@@ -138,12 +143,12 @@ export class AdministrarComponent implements OnInit {
   }
  
   obtenerNombreClub(clubId: number): void {
-    const apiUrl = `http://localhost:3000/api/clubes/${clubId}`;
+    const apiUrl = `${this.API_URL}/api/clubes/${clubId}`;
     this.http.get<{ success: boolean; club: { nombre: string; logotipo: string } }>(apiUrl).subscribe(
       (response) => {
         if (response.success && response.club) {
           const nombreClub = response.club.nombre;
-          this.clubLogoUrl = `http://localhost:3000/uploads/${nombreClub}/logotipo/${nombreClub}.png`;
+          this.clubLogoUrl = `${this.API_URL}/uploads/${nombreClub}/logotipo/${nombreClub}.png`;
         } else {
           console.error('Error: Club no encontrado en la respuesta.');
         }
@@ -156,7 +161,7 @@ export class AdministrarComponent implements OnInit {
   }
 
   verificarEquipos(clubId: number): void {
-    const apiUrl = `http://localhost:3000/api/team/categorias/${clubId}`;
+    const apiUrl = `${this.API_URL}/api/team/categorias/${clubId}`;
     this.http.get<{ categorias: string[] }>(apiUrl).subscribe(
       (response) => {
         if (response.categorias) {

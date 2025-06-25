@@ -207,8 +207,19 @@ body {
 .falling-title {
   animation: title-fall 1.2s ease-out forwards;
   animation-delay: 0.5s; /* Retraso para que caiga después del logo */
+  
+  
 }
 
+.falling-title2 {
+  animation: title-fall 1.2s ease-out forwards;
+  animation-delay: 0.5s; /* Retraso para que caiga después del logo */
+
+    color: white; /* color interior del texto */
+  -webkit-text-stroke: 2px black; /* borde negro de 2px */
+  font-weight: bold; /* opcional: para un texto más grueso */
+  
+}
 
 /**/
 

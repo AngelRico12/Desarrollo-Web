@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+import API_URI from '../../../apiConfig';
+
 interface Club {
   id_club: number;
   nombre: string;
@@ -17,7 +19,7 @@ interface Club {
   providedIn: 'root',
 })
 export class ClubService {
-  private apiUrl = 'http://localhost:3000/api/club/register'; // Ruta del backend para registrar club
+  private apiUrl = `${API_URI}/api/club/register`; // Ruta del backend para registrar club
 
   constructor(private http: HttpClient) {}
 

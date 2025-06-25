@@ -11,8 +11,8 @@ class ClubController {
     
             // Ajustar rutas para ser accesibles desde el frontend
             solicitudes.forEach((club: any) => {
-                club.certificado = `http://localhost:3000${club.certificado.replace(/\\/g, '/')}`;
-                club.logotipo = `http://localhost:3000${club.logotipo.replace(/\\/g, '/')}`;
+                club.certificado = `http://192.168.43.27:3000${club.certificado.replace(/\\/g, '/')}`;
+                club.logotipo = `http://192.168.43.27:3000${club.logotipo.replace(/\\/g, '/')}`;
             });
     
             res.status(200).json(solicitudes);
@@ -69,14 +69,15 @@ const { nombre, correo } = club[0];
         const { id_club } = req.params;
     
         try {
-            const [result] = await db.query('DELETE FROM club WHERE id_club = ?', [id_club]);
-    
-            if (result.affectedRows === 0) {
-                res.status(404).json({ message: 'Club no encontrado.' });
-                return; // Termina la ejecución aquí.
-            }
-    
-            res.status(200).json({ message: 'Club eliminado correctamente.' });
+            const result = await db.query('DELETE FROM club WHERE id_club = ?', [id_club]);
+
+if (result.affectedRows === 0) {
+    res.status(404).json({ message: 'Club no encontrado.' });
+    return;
+}
+
+res.status(200).json({ message: 'Club eliminado correctamente.' });
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al eliminar el club.' });

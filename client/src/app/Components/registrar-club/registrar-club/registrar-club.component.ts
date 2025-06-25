@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ClubService } from '../../../Services/registrar-club/registrar-club.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-registrar-club',
@@ -11,6 +12,8 @@ export class RegistrarClubComponent {
   correo: string = '';
   certificado: File | null = null;
   logotipo: File | null = null;
+  captcha: string = '';
+
 
   constructor(private clubService: ClubService) {}
 
@@ -24,25 +27,33 @@ export class RegistrarClubComponent {
     this.logotipo = event.target.files[0];
   }
 
-  onSubmit(): void {
-    if (this.nombre && this.correo && this.certificado && this.logotipo) {
-      this.clubService
-        .registerClub(this.nombre, this.correo, this.certificado, this.logotipo)
-        .subscribe({
-          next: (response) => {
-            if (response.success) {
-              alert('Club registrado exitosamente!');
-            } else {
-              alert(`Error: ${response.message}`);
-            }
-          },
-          error: (err) => {
-            console.error('Error en el registro:', err);
-            alert('Hubo un error al registrar el club.');
-          },
-        });
-    } else {
-      alert('Por favor, complete todos los campos.');
-    }
+  resolvedCaptcha(token: string) {
+  this.captcha = token;
+  console.log('Captcha resuelto:', token);
+}
+
+
+  onSubmit(form: NgForm): void {
+  if (form.invalid || !this.certificado || !this.logotipo || !this.captcha) {
+    alert('Formulario inválido. Revisa los campos.');
+    return;
   }
+
+  this.clubService
+    .registerClub(this.nombre, this.correo, this.certificado, this.logotipo)
+    .subscribe({
+      next: (response) => {
+        if (response.success) {
+          alert('Club registrado exitosamente!');
+        } else {
+          alert(`Error: ${response.message}`);
+        }
+      },
+      error: (err) => {
+        console.error('Error en el registro:', err);
+        alert('Hubo un error al registrar el club.');
+      },
+    });
+}
+
 }

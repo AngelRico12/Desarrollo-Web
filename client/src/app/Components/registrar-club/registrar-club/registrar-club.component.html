@@ -7,71 +7,87 @@
 
 
   
-  <form (ngSubmit)="onSubmit()">
-    <!-- Nombre del Club -->
-    <div class="form-group">
-      <label for="nombre">Nombre del Club</label>
-      <input
-        type="text"
-        id="nombre"
-        [(ngModel)]="nombre"
-        name="nombre"
-        class="form-control"
-        required
-        placeholder="Ingrese el nombre del club"
-      />
-    </div>
+<form #form="ngForm" (ngSubmit)="onSubmit(form)">
+  <!-- Nombre del Club -->
+  <div class="form-group">
+    <label for="nombre">Nombre del Club</label>
+    <input
+      type="text"
+      id="nombre"
+      [(ngModel)]="nombre"
+      name="nombre"
+      class="form-control"
+      required
+      placeholder="Ingrese el nombre del club"
+    />
+  </div>
 
-    <!-- Correo Electrónico -->
-    <div class="form-group">
-      <label for="correo">Correo Electrónico</label>
-      <input
-        type="email"
-        id="correo"
-        [(ngModel)]="correo"
-        name="correo"
-        class="form-control"
-        required
-        placeholder="Ingrese el correo electrónico"
-        style="color: black;"
-      />
-    </div>
+  <!-- Correo Electrónico -->
+  <div class="form-group">
+    <label for="correo">Correo Electrónico</label>
+    <input
+  type="email"
+  id="correo"
+  [(ngModel)]="correo"
+  name="correo"
+  class="form-control"
+  required
+  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+  #correoInput="ngModel"
+  placeholder="Ingrese el correo electrónico"
+  style="color: black;"
+/>
 
-    <!-- Certificado -->
-    <div class="form-group">
-      <label for="certificado">Certificado</label>
-      <input
-        type="file"
-        id="certificado"
-        (change)="onCertificadoChange($event)"
-        class="form-control"
-        required
-      />
-      <small class="form-text text-muted">Por favor, adjunte el certificado del club.</small>
+    <div *ngIf="correoInput.invalid && correoInput.touched" class="text-danger">
+      Ingrese un correo electrónico válido.
     </div>
+  </div>
 
-    <!-- Logotipo -->
-    <div class="form-group">
-      <label for="logotipo">Logotipo</label>
-      <input
-        type="file"
-        id="logotipo"
-        (change)="onLogotipoChange($event)"
-        class="form-control"
-        required
-      />
-      <small class="form-text text-muted">Por favor, adjunte el logotipo del club.</small>
-    </div>
+  <!-- Certificado -->
+  <div class="form-group">
+    <label for="certificado">Certificado</label>
+    <input
+      type="file"
+      id="certificado"
+      (change)="onCertificadoChange($event)"
+      class="form-control"
+      required
+    />
+    <small class="form-text text-muted">Por favor, adjunte el certificado del club.</small>
+  </div>
 
-    <!-- Botón para Registrar -->
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="!nombre || !correo || !certificado || !logotipo"
-    >
-      Registrar Club
-    </button>
-  </form>
+  <!-- Logotipo -->
+  <div class="form-group">
+    <label for="logotipo">Logotipo</label>
+    <input
+      type="file"
+      id="logotipo"
+      (change)="onLogotipoChange($event)"
+      class="form-control"
+      required
+    />
+    <small class="form-text text-muted">Por favor, adjunte el logotipo del club.</small>
+  </div>
+
+  <!-- CAPTCHA -->
+  <div class="mt-3">
+    <re-captcha
+      [(ngModel)]="captcha"
+      name="captcha"
+      siteKey="6Lf-ymYrAAAAAPDFJIJwi-4W2KP9Zr3psRJavy1H"
+      (resolved)="resolvedCaptcha($event)">
+    </re-captcha>
+  </div>
+
+  <!-- Botón para Registrar -->
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [disabled]="form.invalid || !certificado || !logotipo || !captcha">
+    Registrar Club
+  </button>
+</form>
+
 </div>
 
 

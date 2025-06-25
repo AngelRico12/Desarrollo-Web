@@ -16,6 +16,7 @@ const EquipoDTRoute_1 = __importDefault(require("./routes/EquipoDTRoute"));
 const clubesRoutes_1 = __importDefault(require("./routes/clubesRoutes"));
 const categoriaRoute_1 = __importDefault(require("./routes/categoriaRoute"));
 const EquipoJugadorRoute_1 = __importDefault(require("./routes/EquipoJugadorRoute"));
+const recuperaContraRoute_1 = __importDefault(require("./routes/recuperaContraRoute"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -44,6 +45,7 @@ class Server {
         this.app.use('/api/clubes', clubesRoutes_1.default);
         this.app.use('/api/Ecategoria', categoriaRoute_1.default);
         this.app.use('/api/juga', EquipoJugadorRoute_1.default);
+        this.app.use('/api/recupera', recuperaContraRoute_1.default);
     }
     start() {
         this.app.listen(this.app.get('port'), () => {
