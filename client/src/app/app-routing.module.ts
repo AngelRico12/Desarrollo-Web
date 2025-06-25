@@ -7,6 +7,7 @@ import { AdministrarComponent } from './Components/Administrar/administrar/admin
 import { DuenoComponent } from './Components/Dueño/dueno/dueno.component';
 import { RegistrarClubComponent } from './Components/registrar-club/registrar-club/registrar-club.component';
 import { InicioComponent } from './Components/inicio/inicio/inicio.component';
+import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component';
 
 const routes: Routes = [
   { path: 'equipo', component: EquipoComponent, canActivate: [AuthGuard], data: { roles: ['administrador_equipo'] } },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'Rclub', component: RegistrarClubComponent},
-  { path: 'inicio', component: InicioComponent}
+  { path: 'inicio', component: InicioComponent},
+  { path: 'mapa-sitio', component: MapaSitioComponent },
 ];
 
 @NgModule({

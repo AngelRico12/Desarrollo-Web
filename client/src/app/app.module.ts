@@ -19,6 +19,7 @@ import { DuenoComponent } from './Components/Dueño/dueno/dueno.component';
 import { RegistrarClubComponent } from './Components/registrar-club/registrar-club/registrar-club.component';
 import { NavbarComponent } from './Components/NavBar/navbar/navbar.component';
 import { InicioComponent } from './Components/inicio/inicio/inicio.component';
+import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { InicioComponent } from './Components/inicio/inicio/inicio.component';
      RegistrarClubComponent,
      NavbarComponent,
      InicioComponent,
+     MapaSitioComponent,
   ],
   imports: [
     BrowserModule,
