@@ -9,8 +9,13 @@ import { filter } from 'rxjs';
   standalone: false
 })
 export class NavbarComponent {
+
+  dropdownAbierto = false;
+
   isLoggedIn = false;
   usuario: any = null;
+
+  rol: string = '';
 
   constructor(private router: Router) {
     // Escuchar cambios en las rutas para actualizar el estado de la sesión
@@ -29,6 +34,7 @@ export class NavbarComponent {
     const storedUser = localStorage.getItem('usuario');
     if (storedUser) {
       this.usuario = JSON.parse(storedUser); // Suponiendo que el usuario está almacenado como un objeto JSON
+      this.rol = this.usuario.rol; // <-- aquí guardas el rol
       this.isLoggedIn = true;
     } else {
       this.isLoggedIn = false;

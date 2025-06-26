@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ClubService } from '../../../Services/registrar-club/registrar-club.service';
+import { AfterViewInit } from '@angular/core';
+declare var bootstrap: any; // Importa Bootstrap globalmente
 
 @Component({
   selector: 'app-registrar-club',
@@ -13,6 +15,13 @@ export class RegistrarClubComponent {
   logotipo: File | null = null;
 
   constructor(private clubService: ClubService) {}
+
+    ngAfterViewInit(): void {
+    const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  }
 
   // Manejar cambio de archivo para certificado
   onCertificadoChange(event: any): void {
