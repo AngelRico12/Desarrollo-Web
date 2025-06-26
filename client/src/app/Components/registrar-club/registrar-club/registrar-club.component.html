@@ -60,29 +60,29 @@
             />
             <small class="form-text text-muted">Adjunte el certificado del club.</small>
           </div>
-      <!-- Certificado -->
+     <!-- Logotipo PNG del club -->
       <div class="form-group input-icon">
-        <i class="fas fa-file-alt"></i>
-        <label for="certificado">Certificado</label>
+        <i class="fas fa-image"></i>
+        <label for="logotipoPng">Logotipo del club</label>
 
-        <!-- Icono con tooltip directo -->
+        <!-- Icono con tooltip -->
         <span class="tooltip-icon">
           <i class="fas fa-question-circle"
             tabindex="0"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
-            title="Formato PDF o imagen (JPG/PNG). Máximo 2MB. Debe ser legible y oficial."></i>
+            title="Solo formato PNG. Máximo 2MB. El logotipo debe ser oficial y de buena calidad."></i>
         </span>
 
         <input
           type="file"
-          id="certificado"
-          (change)="onCertificadoChange($event)"
+          id="logotipoPng"
+          (change)="onLogotipoChange($event)"
+          accept="image/png"
           class="form-control"
           required
         />
-        <small class="form-text text-muted">Adjunte el certificado del club.</small>
-
+        <small class="form-text text-muted">Adjunte el logotipo oficial del club en formato PNG.</small>
       </div>
 
       <!-- Botón Registrar -->
