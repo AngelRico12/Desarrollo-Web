@@ -1,0 +1,40 @@
+<!-- Asegúrate de incluir Font Awesome en tu proyecto -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<div class="container-admin">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="profile">
+      <div class="profile-icon">A</div>
+      <div class="profile-name">Admin</div>
+    </div>
+
+    <div class="menu">
+      <a routerLink="Perfil" routerLinkActive="active">
+        <i class="fas fa-user"></i>
+        <span class="menu-text">Perfil</span>
+      </a>
+      <a routerLink="Equipos" routerLinkActive="active">
+        <i class="fas fa-users"></i>
+        <span class="menu-text">Equipos</span>
+      </a>
+      <a routerLink="Jugadores" routerLinkActive="active">
+        <i class="fas fa-futbol"></i>
+        <span class="menu-text">Jugadores</span>
+      </a>
+      <a routerLink="Sistema" routerLinkActive="active">
+        <i class="fas fa-cogs"></i>
+        <span class="menu-text">Sistema</span>
+      </a>
+      <a routerLink="Club" routerLinkActive="active">
+        <i class="fas fa-shield-alt"></i>
+        <span class="menu-text">Club</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Contenido -->
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

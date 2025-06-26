@@ -1,0 +1,54 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Gestión de Jugadores</h2>
+
+  <!-- Buscador -->
+  <input type="text" [(ngModel)]="filtro" class="form-control mb-3" placeholder="Buscar jugador por nombre o apodo...">
+
+  <!-- Tabla de jugadores -->
+  <table class="table table-bordered table-hover table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>Nombre</th>
+        <th>Apodo</th>
+        <th>Posición</th>
+        <th>Sexo</th>
+        <th>Correo</th>
+        <th>Peso</th>
+        <th>Estatura</th>
+        <th>Ciudad</th>
+        <th>Foto</th>
+        <th>Años de experiencia</th>
+        <th>Puntos</th>
+        <th>Amonestaciones</th>
+        <th>Pasatiempos</th>
+        <th>Música favorita</th>
+        <th>Redes sociales</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let jugador of jugadoresFiltrados">
+        <td>{{ jugador.nombre_completo }}</td>
+        <td>{{ jugador.apodo }}</td>
+        <td>{{ jugador.posicion }}</td>
+        <td>{{ jugador.sexo }}</td>
+        <td>{{ jugador.correo }}</td>
+        <td>{{ jugador.peso }} kg</td>
+        <td>{{ jugador.estatura }} cm</td>
+        <td>{{ jugador.ciudad_nacimiento }}</td>
+        <td>
+          <img [src]="sanitizar(jugador.foto)" alt="Foto" width="50">
+        </td>
+        <td>{{ jugador.anios_experiencia }}</td>
+        <td>{{ jugador.puntos_acumulados }}</td>
+        <td>{{ jugador.amonestaciones }}</td>
+        <td>{{ jugador.pasatiempos }}</td>
+        <td>{{ jugador.musica_favorita }}</td>
+        <td>{{ jugador.redes_sociales }}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" (click)="eliminarJugador(jugador.id_jugador)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

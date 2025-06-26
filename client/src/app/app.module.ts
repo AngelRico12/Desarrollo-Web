@@ -19,6 +19,12 @@ import { DuenoComponent } from './Components/Dueño/dueno/dueno.component';
 import { RegistrarClubComponent } from './Components/registrar-club/registrar-club/registrar-club.component';
 import { NavbarComponent } from './Components/NavBar/navbar/navbar.component';
 import { InicioComponent } from './Components/inicio/inicio/inicio.component';
+import { DashboardComponent } from './Components/Dashboards/dashboard/dashboard.component';
+import { LayoutComponent } from './Components/Layout/layout/layout.component';
+import { GestionPerfilComponent } from './Components/PaginasDashboard/gestion-perfil/gestion-perfil.component';
+import { GestionEquiposComponent } from './Components/PaginasDashboard/gestion-equipos/gestion-equipos.component';
+import { GestionJugadoresComponent } from './Components/PaginasDashboard/gestion-jugadores/gestion-jugadores.component';
+import { GestionSistemaComponent } from './Components/PaginasDashboard/gestion-sistema/gestion-sistema.component';
 
 
 @NgModule({
@@ -31,6 +37,12 @@ import { InicioComponent } from './Components/inicio/inicio/inicio.component';
      RegistrarClubComponent,
      NavbarComponent,
      InicioComponent,
+     DashboardComponent,
+     LayoutComponent,
+     GestionPerfilComponent,
+     GestionEquiposComponent,
+     GestionJugadoresComponent,
+     GestionSistemaComponent,
   ],
   imports: [
     BrowserModule,

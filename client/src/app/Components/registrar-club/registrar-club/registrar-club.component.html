@@ -23,25 +23,43 @@
   </div>
 
   <!-- Correo Electrónico -->
-  <div class="form-group">
-    <label for="correo">Correo Electrónico</label>
-    <input
-  type="email"
-  id="correo"
-  [(ngModel)]="correo"
-  name="correo"
-  class="form-control"
-  required
-  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-  #correoInput="ngModel"
-  placeholder="Ingrese el correo electrónico"
-  style="color: black;"
-/>
+<div class="form-group">
+  <label for="correo">Correo Electrónico</label>
+  <input
+    type="email"
+    id="correo"
+    [(ngModel)]="correo"
+    (blur)="verificarCorreoEnTiempoReal()"
+    name="correo"
+    class="form-control"
+    required
+    [ngClass]="{
+      'is-invalid': correoInput.touched && (correoInput.invalid || correoValido === false),
+      'is-valid': correoInput.valid && correoValido === true
+    }"
+    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+    #correoInput="ngModel"
+    placeholder="Ingrese el correo electrónico"
+    style="color: black;"
+  />
 
-    <div *ngIf="correoInput.invalid && correoInput.touched" class="text-danger">
-      Ingrese un correo electrónico válido.
-    </div>
+  <!-- Mensaje de error por formato HTML -->
+  <div *ngIf="correoInput.invalid && correoInput.touched" class="text-danger">
+    Ingrese un correo electrónico con formato válido.
   </div>
+
+  <!-- Mensaje de error por verificación API -->
+  <div *ngIf="correoInput.valid && correoValido === false" class="text-danger">
+    Este correo no existe o es inválido.
+  </div>
+
+  <!-- Mensaje de éxito -->
+  <div *ngIf="correoInput.valid && correoValido === true" class="text-success">
+    El correo es válido y está disponible.
+  </div>
+</div>
+
+
 
   <!-- Certificado -->
   <div class="form-group">
@@ -83,7 +101,7 @@
   <button
     type="submit"
     class="btn btn-primary"
-    [disabled]="form.invalid || !certificado || !logotipo || !captcha">
+    [disabled]="form.invalid || !certificado || !logotipo || !captcha || correoValido === false ">
     Registrar Club
   </button>
 </form>

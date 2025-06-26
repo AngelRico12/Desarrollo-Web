@@ -15,6 +15,12 @@ import categoriaRoute from './routes/categoriaRoute';
 import EquipoJugadorRoute from './routes/EquipoJugadorRoute';
 import recuperaContraRoute from './routes/recuperaContraRoute';
 
+import gestionPerfilRoute from './routes/gestionPerfilRoute';
+
+import equipoRoutes from './routes/equipoRoutes';
+
+import jugadorRoutes from './routes/jugadorRoutes';
+
 class Server {
     private app: express.Application;
 
@@ -49,7 +55,9 @@ class Server {
         this.app.use('/api/Ecategoria', categoriaRoute);
         this.app.use('/api/juga', EquipoJugadorRoute);
         this.app.use('/api/recupera', recuperaContraRoute);
-        
+        this.app.use('/api/perfil', gestionPerfilRoute);
+        this.app.use('/api/equipos', equipoRoutes);
+        this.app.use('/api/jugadores', jugadorRoutes)
 
     }
 

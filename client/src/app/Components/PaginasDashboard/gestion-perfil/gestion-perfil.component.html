@@ -1,0 +1,90 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Perfil del Administrador</h2>
+
+  <!-- NOMBRE -->
+  <div class="form-group mb-3">
+    <label>Nombre</label>
+    <div class="d-flex align-items-center">
+      <input
+        type="text"
+        [(ngModel)]="usuario.nombre"
+        name="nombre"
+        class="form-control"
+        [disabled]="!editando.nombre"
+        required
+      />
+      <button
+        type="button"
+        class="btn btn-sm btn-link ms-2"
+        (click)="activarEdicion('nombre')"
+        aria-label="Editar nombre"
+      >
+        ✏️
+      </button>
+    </div>
+
+    <div *ngIf="editando.nombre" class="mt-2">
+      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('nombre')">Guardar</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('nombre')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- CORREO -->
+  <div class="form-group mb-3">
+    <label>Correo</label>
+    <div class="d-flex align-items-center">
+      <input
+        type="email"
+        [(ngModel)]="usuario.correo"
+        name="correo"
+        class="form-control"
+        [disabled]="!editando.correo"
+        required
+      />
+      <button
+        type="button"
+        class="btn btn-sm btn-link ms-2"
+        (click)="activarEdicion('correo')"
+        aria-label="Editar correo"
+      >
+        ✏️
+      </button>
+    </div>
+
+    <div *ngIf="editando.correo" class="mt-2">
+      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('correo')">Guardar</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('correo')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- CONTRASEÑA -->
+  <div class="form-group mb-3">
+    <label>Contraseña</label>
+    <div class="d-flex align-items-center">
+      <input
+        type="password"
+        [(ngModel)]="usuario.contrasena"
+        name="contrasena"
+        class="form-control"
+        [disabled]="!editando.contrasena"
+        required
+      />
+      <button
+        type="button"
+        class="btn btn-sm btn-link ms-2"
+        (click)="activarEdicion('contrasena')"
+        aria-label="Editar contraseña"
+      >
+        ✏️
+      </button>
+    </div>
+
+    <div *ngIf="editando.contrasena" class="mt-2">
+      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('contrasena')">Guardar</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('contrasena')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Mensaje -->
+  <div *ngIf="mensaje" class="alert alert-info mt-4">{{ mensaje }}</div>
+</div>

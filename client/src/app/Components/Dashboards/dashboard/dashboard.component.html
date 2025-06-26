@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #502c2e;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #e20a1ca4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      margin-right: 10px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: white;
+      padding: 12px 16px;
+      display: block;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      transition: background 0.3s;
+    }
+
+    .menu a:hover {
+      background-color: #e20a1ca4;
+    }
+
+    .content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel:target {
+      display: block;
+    }
+
+    /* Estilo por defecto (si no se ha hecho clic aún) */
+    .panel.default {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="profile">
+      <div class="profile-icon">A</div>
+      <div>Admin</div>
+    </div>
+
+    <div class="menu">
+      <a href="#Equipo">Editar</a>
+      <a href="#Administrar">Administrar</a>
+      <a href="#crear">Crear</a>
+    </div>
+  </div>
+
+
+
+</body>
+</html>

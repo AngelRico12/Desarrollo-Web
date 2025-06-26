@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../Services/Auth/auth.service';
 import { RecuperaContraService } from '../../../Services/RecuperarContra/recupera-contra.service';
 
+import { VerificaCorreoService } from '../../../Services/VerificaCorreo/verifica-correo.service';
+
 
 interface Usuario {
   id?: number;
@@ -41,10 +43,15 @@ codigoGenerado: string = '';
 contrasenaNueva: string = '';
 confirmarContrasena: string = '';
 
+correoValido: boolean | null = null; // null: no validado aún
 
 
 
-  constructor(private authService: AuthService, private router: Router, private recuperaContraService: RecuperaContraService) {}
+
+
+  constructor(private authService: AuthService, private router: Router, private recuperaContraService: RecuperaContraService,
+    private verificaCorreoService: VerificaCorreoService
+  ) {}
 
 login(): void {
   if (!this.captcha) {
@@ -148,4 +155,8 @@ cambiarContrasena() {
     error: () => this.mensaje = 'Error al cambiar la contraseña'
   });
 }
+
+
+
+
 }

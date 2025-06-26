@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <h2>Gestión de Equipos</h2>
+
+  <!-- Filtro y búsqueda -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input type="text" [(ngModel)]="busqueda" (input)="filtrarEquipos()" class="form-control" placeholder="Buscar por nombre...">
+    </div>
+    <div class="col-md-4">
+      <select class="form-control" [(ngModel)]="filtroCategoria" (change)="filtrarEquipos()">
+        <option value="">Todas las categorías</option>
+        <option *ngFor="let categoria of categoriasUnicas">{{ categoria }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tabla de resultados -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Nombre</th>
+          <th>Colores</th>
+          <th>Categoría</th>
+          <th>Ganados</th>
+          <th>Perdidos</th>
+          <th>Amonestaciones</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let equipo of equiposFiltrados">
+          <td>{{ equipo.nombre }}</td>
+          <td>{{ equipo.colores }}</td>
+          <td>{{ equipo.categoria }}</td>
+          <td>{{ equipo.juegos_ganados }}</td>
+          <td>{{ equipo.juegos_perdidos }}</td>
+          <td>{{ equipo.cantidad_amonestaciones }}</td>
+          <td>
+            <select [(ngModel)]="equipo.estado" (change)="cambiarEstado(equipo)">
+              <option value="pendiente">Pendiente</option>
+              <option value="aprobado">Aprobado</option>
+              <option value="suspendido">Suspendido</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="eliminarEquipo(equipo.id_equipo)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="mensaje" class="alert alert-info mt-3">{{ mensaje }}</div>
+</div>
