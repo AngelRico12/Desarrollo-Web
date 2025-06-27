@@ -1,18 +1,21 @@
-// auth.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { jwtDecode } from 'jwt-decode';
+
 
 import API_URL from 'src/apiConfig';
 
-
-interface Usuario {
+interface JwtPayload {
   id_usuario: number;
   nombre: string;
   correo: string;
   rol: string;
-  id_club: number | null;
+  exp: number; // expiración en timestamp
+  iat: number;
+  id_club?: number;
 }
 
 @Injectable({
@@ -20,21 +23,21 @@ interface Usuario {
 })
 export class AuthService {
   private apiUrl = `${API_URL}/api/auth/login`;
-  private usuario: Usuario | null = null;
+  private tokenKey = 'token';
 
   constructor(private http: HttpClient) {}
 
-  login(correo: string, contraseña: string): Observable<{ success: boolean; usuario: Usuario | null }> {
+  login(correo: string, contraseña: string): Observable<{ success: boolean; token?: string }> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = { correo, contraseña };
 
-    return this.http.post<{ success: boolean; usuario?: Usuario }>(this.apiUrl, body, { headers }).pipe(
+    return this.http.post<{ success: boolean; token?: string }>(this.apiUrl, body, { headers }).pipe(
       map((response) => {
-        if (response.success && response.usuario) {
-          this.setUsuario(response.usuario);
-          return { success: true, usuario: response.usuario };
+        if (response.success && response.token) {
+          this.guardarToken(response.token);
+          return { success: true, token: response.token };
         }
-        return { success: false, usuario: null };
+        return { success: false };
       }),
       catchError((err) => {
         console.error('Error de autenticación:', err);
@@ -43,24 +46,42 @@ export class AuthService {
     );
   }
 
-  setUsuario(usuario: Usuario): void {
-    this.usuario = usuario;
-    localStorage.setItem('usuario', JSON.stringify(usuario));
+  guardarToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
   }
 
-  getUsuarioActual(): Usuario | null {
-    if (!this.usuario) {
-      this.usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
-    }
-    return this.usuario;
+  obtenerToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
   }
+
+  eliminarToken(): void {
+    localStorage.removeItem(this.tokenKey);
+  }
+
+estaAutenticado(): boolean {
+  const token = this.obtenerToken();
+  if (!token) return false;
+
+  try {
+    const payload = jwtDecode<JwtPayload>(token);
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+obtenerUsuario(): JwtPayload | null {
+  const token = this.obtenerToken();
+  if (!token) return null;
+
+  try {
+    return jwtDecode<JwtPayload>(token);
+  } catch {
+    return null;
+  }
+}
 
   logout(): void {
-    this.usuario = null;
-    localStorage.removeItem('usuario');
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getUsuarioActual();
+    this.eliminarToken();
   }
 }

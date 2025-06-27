@@ -44,8 +44,19 @@ exports.cambiarEstado = cambiarEstado;
 const eliminarEquipo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
+        // 1. Obtener los jugadores asociados al equipo
+        const jugadores = yield database_1.default.query('SELECT id_jugador FROM jugador WHERE id_equipo = ?', [id]);
+        // Extraemos los ids de jugadores
+        const idsJugadores = jugadores.map((j) => j.id_jugador);
+        if (idsJugadores.length > 0) {
+            // 2. Eliminar de folio_jugador todos los registros vinculados a esos jugadores
+            yield database_1.default.query('DELETE FROM folio_jugador WHERE id_jugador IN (?)', [idsJugadores]);
+            // 3. Eliminar los jugadores vinculados al equipo
+            yield database_1.default.query('DELETE FROM jugador WHERE id_equipo = ?', [id]);
+        }
+        // 4. Finalmente eliminar el equipo
         yield database_1.default.query('DELETE FROM equipo WHERE id_equipo = ?', [id]);
-        res.json({ success: true, message: 'Equipo eliminado correctamente' });
+        res.json({ success: true, message: 'Equipo y registros relacionados eliminados correctamente' });
     }
     catch (error) {
         console.error('Error al eliminar equipo:', error);

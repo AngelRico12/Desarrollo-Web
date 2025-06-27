@@ -26,12 +26,15 @@ const getJugadores = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getJugadores = getJugadores;
-// Eliminar jugador
+// Eliminar jugador junto con sus folios
 const eliminarJugador = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
+        // Primero eliminar registros relacionados en folio_jugador
+        yield database_1.default.query('DELETE FROM folio_jugador WHERE id_jugador = ?', [id]);
+        // Luego eliminar el jugador
         yield database_1.default.query('DELETE FROM jugador WHERE id_jugador = ?', [id]);
-        res.json({ success: true, message: 'Jugador eliminado correctamente' });
+        res.json({ success: true, message: 'Jugador y folios eliminados correctamente' });
     }
     catch (error) {
         console.error('Error al eliminar jugador:', error);

@@ -21,6 +21,10 @@ import equipoRoutes from './routes/equipoRoutes';
 
 import jugadorRoutes from './routes/jugadorRoutes';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 class Server {
     private app: express.Application;
 

@@ -36,8 +36,17 @@ const storage = multer_1.default.diskStorage({
         cb(null, specificDir); // Define la subcarpeta para "certificado" o "logotipo"
     },
     filename: (req, file, cb) => {
-        const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
-        cb(null, sanitizedFileName); // Guardar con el nombre original, pero saneado
+        if (file.fieldname === 'logotipo') {
+            cb(null, 'logo.png');
+        }
+        else if (file.fieldname === 'certificado') {
+            cb(null, 'certificado.pdf');
+        }
+        else {
+            // En caso de otro campo, usar nombre original saneado
+            const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+            cb(null, sanitizedFileName);
+        }
     },
 });
 // Configuración de Multer para manejar múltiples archivos
@@ -48,8 +57,7 @@ const registerClub = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const { nombre, correo } = req.body;
     // Asegúrate de que req sea del tipo MulterRequest para que TypeScript lo reconozca
     const files = req.files;
-    // Transformar la ruta almacenada en path relativo a '/uploads/'
-    // Transformar la ruta almacenada en path relativo a '/uploads/'
+    // Función para transformar la ruta almacenada en path relativo a '/uploads/'
     const transformPath = (filePath) => '/' + filePath.replace(path_1.default.join(__dirname, '../../'), '').replace(/\\/g, '/');
     const certificadoPath = ((_b = (_a = files === null || files === void 0 ? void 0 : files['certificado']) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.path)
         ? transformPath(files['certificado'][0].path)

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
+import { AuthService } from 'src/app/Services/Auth/auth.service'; // Asegúrate de que esta ruta sea correcta
 
 @Component({
   selector: 'app-navbar',
@@ -14,42 +15,39 @@ export class NavbarComponent {
 
   isLoggedIn = false;
   usuario: any = null;
-
   rol: string = '';
 
-  constructor(private router: Router) {
-    // Escuchar cambios en las rutas para actualizar el estado de la sesión
+  constructor(private router: Router, private authService: AuthService) {
+    // Escuchar cambios de navegación para actualizar el estado de sesión
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd) // Filtrar los eventos de navegación
+      filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      this.checkUser(); // Re-verificar el estado del usuario en cada cambio de ruta
+      this.actualizarEstadoUsuario();
     });
   }
 
   ngOnInit(): void {
-    this.checkUser(); // Verificar el estado al cargar el componente por primera vez
+    this.actualizarEstadoUsuario();
   }
 
-  checkUser() {
-    const storedUser = localStorage.getItem('usuario');
-    if (storedUser) {
-      this.usuario = JSON.parse(storedUser); // Suponiendo que el usuario está almacenado como un objeto JSON
-      this.rol = this.usuario.rol; // <-- aquí guardas el rol
-      this.isLoggedIn = true;
+  actualizarEstadoUsuario(): void {
+    this.isLoggedIn = this.authService.estaAutenticado();
+    const payload = this.authService.obtenerUsuario();
+
+    if (this.isLoggedIn && payload) {
+      this.usuario = payload;
+      this.rol = payload.rol;
     } else {
-      this.isLoggedIn = false;
       this.usuario = null;
+      this.rol = '';
     }
   }
 
   logout(): void {
-    localStorage.removeItem('usuario'); // Eliminar el usuario del localStorage
+    this.authService.logout();
     this.isLoggedIn = false;
     this.usuario = null;
-    window.location.reload();
+    this.rol = '';
     this.router.navigate(['/']);
-   
   }
-
-
 }

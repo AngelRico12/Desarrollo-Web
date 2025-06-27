@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
-import { ZXingScannerModule } from '@zxing/ngx-scanner';
+
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,6 +26,7 @@ import { GestionEquiposComponent } from './Components/PaginasDashboard/gestion-e
 import { GestionJugadoresComponent } from './Components/PaginasDashboard/gestion-jugadores/gestion-jugadores.component';
 import { GestionSistemaComponent } from './Components/PaginasDashboard/gestion-sistema/gestion-sistema.component';
 import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component';
+import { BreadcrumbComponent } from './Components/breadcrumb/breadcrumb.component';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component
      GestionJugadoresComponent,
      GestionSistemaComponent,
      MapaSitioComponent,
+     BreadcrumbComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,7 @@ import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component
     FormsModule,
     HttpClientModule,
     NgxPayPalModule,
-    ZXingScannerModule,
+
     ReactiveFormsModule, 
     RecaptchaModule,
     RecaptchaFormsModule

@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://0126-2806-102e-17-5f55-d931-2132-f1a1-2bad.ngrok-free.app",
+    "target": "https://192.168.1.72",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

@@ -13,17 +13,23 @@ export const getJugadores = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-// Eliminar jugador
+// Eliminar jugador junto con sus folios
 export const eliminarJugador = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
+    // Primero eliminar registros relacionados en folio_jugador
+    await pool.query('DELETE FROM folio_jugador WHERE id_jugador = ?', [id]);
+
+    // Luego eliminar el jugador
     await pool.query('DELETE FROM jugador WHERE id_jugador = ?', [id]);
-    res.json({ success: true, message: 'Jugador eliminado correctamente' });
+
+    res.json({ success: true, message: 'Jugador y folios eliminados correctamente' });
   } catch (error) {
     console.error('Error al eliminar jugador:', error);
     res.status(500).json({ success: false, message: 'Error en el servidor' });
   }
 };
+
 
 export default {
   getJugadores,

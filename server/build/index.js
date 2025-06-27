@@ -20,6 +20,8 @@ const recuperaContraRoute_1 = __importDefault(require("./routes/recuperaContraRo
 const gestionPerfilRoute_1 = __importDefault(require("./routes/gestionPerfilRoute"));
 const equipoRoutes_1 = __importDefault(require("./routes/equipoRoutes"));
 const jugadorRoutes_1 = __importDefault(require("./routes/jugadorRoutes"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 class Server {
     constructor() {
         this.app = (0, express_1.default)();

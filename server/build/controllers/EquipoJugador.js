@@ -21,9 +21,6 @@ const fs_1 = __importDefault(require("fs"));
 const storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
         const { nombreClub, categoria, posicion } = req.body;
-        console.log('Nombre del club:', nombreClub);
-        console.log('Categoría:', categoria);
-        console.log('Datos recibidos en req.body (Multer):', req.body);
         if (!nombreClub || !categoria || !posicion) {
             cb(new Error('El nombre del club y la categoría son obligatorios.'), '');
             return;
@@ -36,11 +33,11 @@ const storage = multer_1.default.diskStorage({
         if (!fs_1.default.existsSync(baseDir)) {
             fs_1.default.mkdirSync(baseDir, { recursive: true });
         }
-        cb(null, baseDir); // Define la carpeta donde se guardarán las fotos
+        cb(null, baseDir);
     },
     filename: (req, file, cb) => {
-        const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
-        cb(null, file.originalname); // Guardar con el nombre original, pero saneado
+        // Cambiar el nombre del archivo a foto.png
+        cb(null, 'foto.png');
     },
 });
 // Configuración de Multer

@@ -9,19 +9,24 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const usuario = this.authService.getUsuarioActual();
-
-    if (usuario) {
-      const allowedRoles = route.data['roles'] as Array<string>;
-      if (allowedRoles && allowedRoles.includes(usuario.rol)) {
-        return true;
-      } else {
-        this.router.navigate(['/']); // Redirigir si el rol no es permitido
-        return false;
-      }
-    } else {
-      this.router.navigate(['/']); // Redirigir si no está autenticado
+    if (!this.authService.estaAutenticado()) {
+      this.router.navigate(['/login']); // Cambia a tu ruta de login
       return false;
     }
+
+    const usuario = this.authService.obtenerUsuario();
+    if (!usuario) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    const allowedRoles = route.data['roles'] as Array<string>;
+    if (allowedRoles && allowedRoles.includes(usuario.rol)) {
+      return true;
+    }
+
+    // No autorizado por rol
+    this.router.navigate(['/']);
+    return false;
   }
 }

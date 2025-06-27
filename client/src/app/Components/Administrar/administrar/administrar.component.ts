@@ -58,27 +58,27 @@ export class AdministrarComponent implements OnInit {
     this.editMode = !this.editMode;
   }
 
+  
+
 
   ngOnInit(): void {
-    const usuarioString = localStorage.getItem('usuario');
-    if (usuarioString) {
-      try {
-        const usuario = JSON.parse(usuarioString);
-        if (usuario.id_club) {
-          this.obtenerNombreClub(usuario.id_club);
-          this.verificarEquipos(usuario.id_club);
-          const nombreUsuario = usuario.nombre; // Obtener nombre del usuario directamente desde el localStorage
-          this.verificarEquipo(nombreUsuario);  // Pasar nombreUsuario al método verificarEquipo
-        } else {
-          console.error('El usuario no tiene un club asociado.');
-        }
-      } catch (error) {
-        console.error('Error al parsear el objeto usuario:', error);
-      }
+  const usuario = this.authService.obtenerUsuario();
+  console.log('Usuario decodificado:', usuario);
+
+  if (usuario) {
+    if (usuario.id_club) {
+      this.obtenerNombreClub(usuario.id_club);
+      this.verificarEquipos(usuario.id_club);
+      const nombreUsuario = usuario.nombre;
+      this.verificarEquipo(nombreUsuario);
     } else {
-      console.error('No se encontró el objeto usuario en el localStorage.');
+      console.error('El usuario no tiene un club asociado.');
     }
+  } else {
+    console.error('No se pudo obtener el usuario desde el token JWT.');
   }
+}
+
   
 
   ////////////////
@@ -178,17 +178,17 @@ export class AdministrarComponent implements OnInit {
   }
   
   seleccionarCategoria(categoria: string): void {
-    this.categoriaSeleccionada = categoria;
-    this.createTeamForm.get('categoria')?.setValue(categoria); // Actualiza el FormControl del formulario
-  
-    const usuarioString = localStorage.getItem('usuario');
-    if (usuarioString) {
-      const usuario = JSON.parse(usuarioString);
-      if (usuario.id_club) {
-        this.verificarEquipos(usuario.id_club); // Verificar equipos solo cuando seleccionamos la categoría
-      }
-    }
+  this.categoriaSeleccionada = categoria;
+  this.createTeamForm.get('categoria')?.setValue(categoria); // Actualiza el FormControl del formulario
+
+  const usuario = this.authService.obtenerUsuario();
+  if (usuario && usuario.id_club) {
+    this.verificarEquipos(usuario.id_club); // Verificar equipos solo cuando seleccionamos la categoría
+  } else {
+    console.error('No se pudo obtener el usuario o el club desde el token JWT.');
   }
+}
+
 
 
   
@@ -253,18 +253,17 @@ editarEquipo(): void {
     return;
   }
 
-  const usuarioString = localStorage.getItem('usuario');
-  if (!usuarioString) {
+  const usuario = this.authService.obtenerUsuario();
+  if (!usuario) {
     this.errorMessage = 'No estás autenticado. Inicia sesión.';
     return;
   }
-
-  const usuario = JSON.parse(usuarioString);
 
   if (!usuario.id_club) {
     this.errorMessage = 'No se encontró el club asociado al usuario.';
     return;
   }
+
 
   const data = {
     id_club: usuario.id_club,

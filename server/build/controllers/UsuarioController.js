@@ -13,14 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUsuario = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = __importDefault(require("../database"));
 const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { correo, contraseña } = req.body;
     try {
-        const results = yield database_1.default.query('SELECT id_usuario, nombre, correo, rol, id_club FROM usuario WHERE correo = ? AND contraseña = ?', [correo, contraseña]);
-        if (results.length > 0) {
-            const usuario = results[0];
-            res.json({ success: true, usuario });
+        console.log('Credenciales recibidas:', correo, contraseña); // 👀 Verifica lo que llega
+        const rows = yield database_1.default.query('SELECT id_usuario, nombre, correo, rol, id_club FROM usuario WHERE correo = ? AND contraseña = ?', [correo, contraseña]);
+        if (rows.length > 0) {
+            const usuario = rows[0];
+            const token = jsonwebtoken_1.default.sign({
+                id_usuario: usuario.id_usuario,
+                nombre: usuario.nombre,
+                rol: usuario.rol,
+                correo: usuario.correo,
+                id_club: usuario.id_club, // ✅ Incluido correctamente
+            }, process.env.JWT_SECRET, { expiresIn: '2h' });
+            res.json({ success: true, token, usuario });
         }
         else {
             res.status(401).json({ success: false, message: 'Correo o contraseña incorrectos' });

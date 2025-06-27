@@ -27,8 +27,15 @@ const storage = multer.diskStorage({
     cb(null, specificDir); // Define la subcarpeta para "certificado" o "logotipo"
   },
   filename: (req, file, cb) => {
-    const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
-    cb(null, sanitizedFileName); // Guardar con el nombre original, pero saneado
+    if (file.fieldname === 'logotipo') {
+      cb(null, 'logo.png');
+    } else if (file.fieldname === 'certificado') {
+      cb(null, 'certificado.pdf');
+    } else {
+      // En caso de otro campo, usar nombre original saneado
+      const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+      cb(null, sanitizedFileName);
+    }
   },
 });
 
@@ -49,11 +56,9 @@ export const registerClub = async (req: Request, res: Response): Promise<void> =
   // Asegúrate de que req sea del tipo MulterRequest para que TypeScript lo reconozca
   const files = (req as MulterRequest).files;
 
-  // Transformar la ruta almacenada en path relativo a '/uploads/'
-// Transformar la ruta almacenada en path relativo a '/uploads/'
-const transformPath = (filePath: string) =>
-  '/' + filePath.replace(path.join(__dirname, '../../'), '').replace(/\\/g, '/');
-
+  // Función para transformar la ruta almacenada en path relativo a '/uploads/'
+  const transformPath = (filePath: string) =>
+    '/' + filePath.replace(path.join(__dirname, '../../'), '').replace(/\\/g, '/');
 
   const certificadoPath = files?.['certificado']?.[0]?.path
     ? transformPath(files['certificado'][0].path)

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AuthService} from '../../../Services/Auth/auth.service'
+
 
 import API_URL from 'src/apiConfig';
 
@@ -147,86 +149,76 @@ export class EquipoComponent {
 
 
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private authService: AuthService) {}
 
 
 
   ngOnInit(): void {
-    this.obtenerCategoriaYClub();
-    this.obtenerIdUsuarioYHacerSolicitud();
-    this.obtenerEquipoPorUsuario();
+  this.obtenerCategoriaYClub();
+  this.obtenerIdUsuarioYHacerSolicitud();
+  this.obtenerEquipoPorUsuario();
 
-    const usuarioString = localStorage.getItem('usuario');
-    if (usuarioString) {
-      try {
-        const usuario = JSON.parse(usuarioString);
+  const usuario = this.authService.obtenerUsuario(); // ← usamos el servicio
 
-        if (usuario.nombre) {
-          // Llamada al método para obtener la categoría
-          this.obtenerCategoria(usuario.nombre);
-        } else {
-          console.error('El usuario no tiene un nombreUsuario asociado.');
-        }
-
-        if (usuario.id_club) {
-          // Llamada al método para obtener el nombre del club
-          this.obtenerNombreClub(usuario.id_club);
-        } else {
-          console.error('El usuario no tiene un club asociado.');
-        }
-      } catch (error) {
-        console.error('Error al parsear el objeto usuario:', error);
-      }
+  if (usuario) {
+    if (usuario.nombre) {
+      // Llamada al método para obtener la categoría
+      this.obtenerCategoria(usuario.nombre);
     } else {
-      console.error('No se encontró el objeto usuario en el localStorage.');
+      console.error('El usuario no tiene un nombreUsuario asociado.');
     }
 
-    if (this.jugadorRecuperado.redes_sociales) {
-      const redes = this.jugadorRecuperado.redes_sociales.split(' - ');
-      redes.forEach((red) => {
-        if (red.startsWith('facebook:')) {
-          this.facebookLink = 'https://facebook.com/' + red.split(':')[1].trim();
-        }
-        if (red.startsWith('instagram:')) {
-          this.instagramLink = 'https://instagram.com/' + red.split(':')[1].trim();
-        }
-      });
+    if (usuario.id_club) {
+      // Llamada al método para obtener el nombre del club
+      this.obtenerNombreClub(usuario.id_club);
+    } else {
+      console.error('El usuario no tiene un club asociado.');
     }
-  
+  } else {
+    console.error('No se pudo obtener el usuario desde el token.');
   }
 
-  obtenerEquipoPorUsuario(): void {
-    // Recuperar el objeto 'usuario' del localStorage
-    const usuario = localStorage.getItem('usuario');
-    
-    if (!usuario) {
-      console.error('No se encontró el objeto usuario en localStorage');
-      return;
-    }
-
-    // Parsear el JSON almacenado en localStorage a un objeto JavaScript
-    const usuarioObj = JSON.parse(usuario);
-    const nombreUsuario = usuarioObj.nombre;
-
-    // Obtener la URL de la API con el nombre de usuario
-    const apiUrl = `${this.API_URL}/api/Ecategoria/equipoXU/${nombreUsuario}`;
-    
-    this.http.get<{ success: boolean, equipo: any, mensaje: string }>(apiUrl).subscribe(
-      (response) => {
-        if (response.success) {
-          console.log('Datos del equipo:', response.equipo);
-
-          // Llenar el objeto 'equipo' con los datos recibidos
-          this.equipo = response.equipo;
-        } else {
-          console.error('Error: ', response.mensaje);
-        }
-      },
-      (error) => {
-        console.error('Error al obtener el equipo:', error);
+  if (this.jugadorRecuperado.redes_sociales) {
+    const redes = this.jugadorRecuperado.redes_sociales.split(' - ');
+    redes.forEach((red) => {
+      if (red.startsWith('facebook:')) {
+        this.facebookLink = 'https://facebook.com/' + red.split(':')[1].trim();
       }
-    );
+      if (red.startsWith('instagram:')) {
+        this.instagramLink = 'https://instagram.com/' + red.split(':')[1].trim();
+      }
+    });
   }
+}
+
+
+ obtenerEquipoPorUsuario(): void {
+  const usuario = this.authService.obtenerUsuario();
+
+  if (!usuario || !usuario.nombre) {
+    console.error('No se pudo obtener el nombre de usuario desde el token');
+    return;
+  }
+
+  const nombreUsuario = usuario.nombre;
+
+  const apiUrl = `${this.API_URL}/api/Ecategoria/equipoXU/${nombreUsuario}`;
+  
+  this.http.get<{ success: boolean, equipo: any, mensaje: string }>(apiUrl).subscribe(
+    (response) => {
+      if (response.success) {
+        console.log('Datos del equipo:', response.equipo);
+        this.equipo = response.equipo;
+      } else {
+        console.error('Error: ', response.mensaje);
+      }
+    },
+    (error) => {
+      console.error('Error al obtener el equipo:', error);
+    }
+  );
+}
+
 
 
   VerificarEquipoC(): void {
@@ -287,37 +279,30 @@ export class EquipoComponent {
 
 
 
-  obtenerCategoriaYClub(): void {
-    // Recuperar el objeto 'usuario' del localStorage
-    const usuario = localStorage.getItem('usuario');
-  
-    if (!usuario) {
-      console.error('No se encontró el objeto usuario en localStorage');
-      return;
-    }
-  
-    // Parsear el JSON almacenado en localStorage a un objeto JavaScript
-    const usuarioObj = JSON.parse(usuario);
-    const nombre = usuarioObj.nombre;
-  
-    // Obtener el nombre del club directamente del objeto usuario
-    this.nombre_club = usuarioObj.nombre;
-  
-    const apiUrl = `${this.API_URL}/api/Ecategoria/categoria-usuario/${nombre}`;
-    this.http.get<{ categoria: string }>(apiUrl).subscribe(
+ obtenerCategoriaYClub(): void {
+  const usuario = this.authService.obtenerUsuario();
 
-      (response) => {
-        this.categoria = response.categoria;
-        console.log('Datos recibidos:', response);
-  
-        // Llamar al método verificarPosicionesOcupadas después de cargar los datos
-        this.verificarPosicionesOcupadas();
-      },
-      (error) => {
-        console.error('Error al obtener la categoría:', error);
-      }
-    );
+  if (!usuario || !usuario.nombre) {
+    console.error('No se pudo obtener el nombre desde el token');
+    return;
   }
+
+  const nombre = usuario.nombre;
+  this.nombre_club = nombre; // Se mantiene igual, si el club tiene el mismo nombre
+
+  const apiUrl = `${this.API_URL}/api/Ecategoria/categoria-usuario/${nombre}`;
+  this.http.get<{ categoria: string }>(apiUrl).subscribe(
+    (response) => {
+      this.categoria = response.categoria;
+      console.log('Datos recibidos:', response);
+      this.verificarPosicionesOcupadas();
+    },
+    (error) => {
+      console.error('Error al obtener la categoría:', error);
+    }
+  );
+}
+
   
 
   verificarPosicionesOcupadas(): void {
@@ -469,37 +454,33 @@ export class EquipoComponent {
   
   
 
-  obtenerIdUsuarioYHacerSolicitud(): void {
-    const usuarioString = localStorage.getItem('usuario');
-    if (usuarioString) {
-      try {
-        const usuario = JSON.parse(usuarioString);
-        const nombre = usuario.nombre;
+obtenerIdUsuarioYHacerSolicitud(): void {
+  const usuario = this.authService.obtenerUsuario(); // del token
 
-        // Hacer la solicitud a la API con el id_usuario
-        this.http.get(`${this.API_URL}/api/Ecategoria/id-equipo/${nombre}`).subscribe(
-          (response: any) => {
-            console.log('Respuesta de la API:', response);
-            // Asignar el id_equipo a this.jugador.id_equipo
-            
-            if (response.success) {
-              this.jugador.id_equipo = response.id_equipo; // Asigna el valor a la variable
-              this.verificarEstadoEquipo(response.id_equipo)
-            } else {
-              console.error('No se pudo obtener el id_equipo.');
-            }
-          },
-          (error) => {
-            console.error('Error al hacer la solicitud:', error);
-          }
-        );
-      } catch (error) {
-        console.error('Error al parsear el objeto usuario:', error);
+  if (usuario && usuario.nombre) {
+    const nombre = usuario.nombre;
+
+    // Hacer la solicitud a la API con el nombre de usuario
+    this.http.get(`${this.API_URL}/api/Ecategoria/id-equipo/${nombre}`).subscribe(
+      (response: any) => {
+        console.log('Respuesta de la API:', response);
+
+        if (response.success) {
+          this.jugador.id_equipo = response.id_equipo;
+          this.verificarEstadoEquipo(response.id_equipo);
+        } else {
+          console.error('No se pudo obtener el id_equipo.');
+        }
+      },
+      (error) => {
+        console.error('Error al hacer la solicitud:', error);
       }
-    } else {
-      console.error('No se encontró el objeto usuario en el localStorage.');
-    }
+    );
+  } else {
+    console.error('No se encontró el usuario autenticado o no tiene nombre.');
   }
+}
+
 
  
 
@@ -550,57 +531,50 @@ export class EquipoComponent {
   }
 
 
-  abrirFormulario(posicion: string): void {
-    
-      
-    this.posicionSeleccionada = posicion;
+abrirFormulario(posicion: string): void {
+  this.posicionSeleccionada = posicion;
+  this.jugador.posicion = this.posicionSeleccionada;
 
-  
-    this.jugador.posicion = this.posicionSeleccionada;
-  
-    // Verificar si la posición está ocupada antes de abrir el formulario
-    const apiUrl = `${this.API_URL}/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
-  
-    this.http.get<{ 
-      success: boolean; 
-      message: string; 
-    }>(apiUrl).subscribe((response) => {
+  const apiUrl = `${this.API_URL}/api/juga/jugador/${this.jugador.posicion}/${this.jugador.id_equipo}`;
+
+  this.http.get<{ success: boolean; message: string }>(apiUrl).subscribe(
+    (response) => {
       if (response.success) {
         this.posicionOcupada = true;
         this.formularioVisible = false; // No mostrar el formulario
         this.formularioRecuperado = true;
         console.log('Posición ocupada. Ejecutando obtenerJugador...');
-        
-        // Ejecutar obtenerJugador si la posición está ocupada
         this.obtenerJugador('nombre_completo', 'M', 'fecha_nacimiento');
       } else {
         this.posicionOcupada = false;
         this.formularioVisible = true; // Mostrar el formulario
         console.log('Posición no ocupada. Mostrando formulario...');
-        
-        // Asegurarse de que los valores se actualicen al abrir el formulario
-        const usuarioString = localStorage.getItem('usuario');
-        if (usuarioString) {
-          const usuario = JSON.parse(usuarioString);
-          
-          // Obtener el id_club y el id_usuario
+
+        // Obtener usuario desde AuthService
+        const usuario = this.authService.obtenerUsuario();
+        if (usuario) {
           if (usuario.id_club) {
             this.obtenerNombreClub(usuario.id_club);
           }
           if (usuario.id_usuario) {
-            this.obtenerCategoria(usuario.id_usuario);
+            this.obtenerCategoria(usuario.id_usuario.toString());
+
             this.obtenerIdUsuarioYHacerSolicitud();
           }
+        } else {
+          console.error('No se pudo obtener usuario desde token.');
         }
       }
-    }, (error) => {
+    },
+    (error) => {
       console.error('Error al verificar la posición:', error);
       this.posicionOcupada = false;
       this.formularioVisible = true; // Permitir abrir el formulario en caso de error
       this.obtenerCategoriaYClub();
-    });
-  }
-  
+    }
+  );
+}
+
   cerrarFormulario2(): void {
     this.formularioRecuperado = false;
     
