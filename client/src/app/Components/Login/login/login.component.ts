@@ -130,7 +130,7 @@ verificarCodigo() {
       } else if (rol === 'administrador_equipo') {
         this.router.navigate(['/administrar']);
       } else if (rol === 'administrador_sistema') {
-        this.router.navigate(['/dueno']);
+        this.router.navigate(['/Dashboard']);
       }
     }
 

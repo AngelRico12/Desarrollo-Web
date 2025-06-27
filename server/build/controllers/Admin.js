@@ -23,8 +23,8 @@ class ClubController {
                 const solicitudes = yield database_1.default.query('SELECT * FROM club WHERE estado = ?', ['pendiente']);
                 // Ajustar rutas para ser accesibles desde el frontend
                 solicitudes.forEach((club) => {
-                    club.certificado = `http://192.168.1.72:3000${club.certificado.replace(/\\/g, '/')}`;
-                    club.logotipo = `http://192.168.1.72:3000${club.logotipo.replace(/\\/g, '/')}`;
+                    club.certificado = `http://192.168.43.27:3000${club.certificado.replace(/\\/g, '/')}`;
+                    club.logotipo = `http://192.168.43.27:3000${club.logotipo.replace(/\\/g, '/')}`;
                 });
                 res.status(200).json(solicitudes);
             }

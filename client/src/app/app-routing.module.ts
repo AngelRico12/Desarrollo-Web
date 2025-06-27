@@ -16,19 +16,22 @@ import { GestionJugadoresComponent} from './Components/PaginasDashboard/gestion-
 import { GestionPerfilComponent} from './Components/PaginasDashboard/gestion-perfil/gestion-perfil.component';
 import { GestionSistemaComponent} from './Components/PaginasDashboard/gestion-sistema/gestion-sistema.component';
 
+import { MapaSitioComponent} from './Components/mapa-sitio/mapa-sitio.component';
+
 const routes: Routes = [
   { path: 'equipo', component: EquipoComponent, canActivate: [AuthGuard], data: { roles: ['administrador_equipo'] } },
   { path: 'administrar', component: AdministrarComponent, canActivate: [AuthGuard], data: { roles: ['administrador_equipo'] } },
   { path: 'dueno', component: DuenoComponent, canActivate: [AuthGuard], data: { roles: ['administrador_sistema'] } },
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/inicio', pathMatch: 'full' },
   { path: 'Rclub', component: RegistrarClubComponent},
   { path: 'inicio', component: InicioComponent},
   { path: 'Dashboar', component: DashboardComponent},
+  { path: 'mapa-sitio', component: MapaSitioComponent},
    
   {
     path: 'dashboard',
-    component: LayoutComponent,
+    component: LayoutComponent, canActivate: [AuthGuard], data: { roles: ['administrador_sistema'] },
     children: [
       { path: 'Equipos', component: GestionEquiposComponent },
       { path: 'Jugadores', component: GestionJugadoresComponent },

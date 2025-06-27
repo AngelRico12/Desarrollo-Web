@@ -25,6 +25,7 @@ import { GestionPerfilComponent } from './Components/PaginasDashboard/gestion-pe
 import { GestionEquiposComponent } from './Components/PaginasDashboard/gestion-equipos/gestion-equipos.component';
 import { GestionJugadoresComponent } from './Components/PaginasDashboard/gestion-jugadores/gestion-jugadores.component';
 import { GestionSistemaComponent } from './Components/PaginasDashboard/gestion-sistema/gestion-sistema.component';
+import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { GestionSistemaComponent } from './Components/PaginasDashboard/gestion-s
      GestionEquiposComponent,
      GestionJugadoresComponent,
      GestionSistemaComponent,
+     MapaSitioComponent,
   ],
   imports: [
     BrowserModule,

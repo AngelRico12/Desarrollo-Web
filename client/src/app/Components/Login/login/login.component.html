@@ -1,8 +1,8 @@
-<div class="d-flex justify-content-center align-items-center vh-100" style="background-image: url('assets/Fondo.jpeg'); background-size: cover; background-position: center;">
-  <div class="container" style="max-width: 400px; background-color: rgba(51, 51, 51, 0.9); padding: 20px; border-radius: 8px; color: #f5f5f5;">
+<div class="d-flex justify-content-center align-items-center vh-100" style="background-image: url('assets/Fondowest.png'); background-size: cover; background-position: center;">
+  <div class="login-container">
 
     <!-- TÍTULO DINÁMICO -->
-    <h2 class="text-center">
+    <h2 class="header text-center mb-4">
       {{
         estado === 'recuperar' ? 'Recuperar Contraseña' :
         estado === 'codigo' ? 'Verificar Código' :
@@ -14,47 +14,42 @@
     <!-- FORMULARIO INICIO DE SESIÓN -->
     <form *ngIf="estado === 'login'" (ngSubmit)="login()">
       <!-- Correo -->
-      <div class="form-group">
+      <div class="form-group input-icon">
+        <i class="fas fa-envelope"></i>
         <label for="correo">Correo</label>
         <input
-  type="email"
-  id="correo"
-  [(ngModel)]="correo"
-  
-  name="correo"
-  class="form-control"
-  required
-  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-  #correoInput="ngModel"
-  placeholder="Ingrese su correo electrónico"
-/>
-
-<!-- Validación visual -->
-<div *ngIf="correoInput.touched && correoInput.invalid" class="text-danger">
-  Ingrese un correo válido.
-</div>
-
-<div *ngIf="correoValido === true" class="text-success">
-  Correo verificado correctamente.
-</div>
-
+          type="email"
+          id="correo"
+          [(ngModel)]="correo"
+          name="correo"
+          class="form-control"
+          required
+          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+          #correoInput="ngModel"
+          placeholder="Ingrese su correo electrónico"
+        />
+        <div *ngIf="correoInput.touched && correoInput.invalid" class="text-danger">
+          Ingrese un correo válido.
+        </div>
+        <div *ngIf="correoValido === true" class="text-success">
+          Correo verificado correctamente.
+        </div>
       </div>
 
       <!-- Contraseña -->
-      <div class="form-group mt-3">
+      <div class="form-group input-icon">
+        <i class="fas fa-lock"></i>
         <label for="contrasena">Contraseña</label>
         <input type="password" [(ngModel)]="contrasena" name="contrasena" class="form-control" required />
       </div>
 
       <!-- Enlace para recuperar contraseña -->
       <div class="mt-2 text-end">
-        <span
-  (click)="estado = 'recuperar'; modoVerificacion = 'recuperar'"
-  class="text-light text-decoration-underline"
-  style="cursor: pointer;">
-  ¿Olvidaste tu contraseña?
-</span>
-
+        <span (click)="estado = 'recuperar'; modoVerificacion = 'recuperar'"
+              class="text-light text-decoration-underline"
+              style="cursor: pointer;">
+          ¿Olvidaste tu contraseña?
+        </span>
       </div>
 
       <!-- CAPTCHA -->
@@ -62,26 +57,21 @@
         <re-captcha
           [(ngModel)]="captcha"
           name="captcha"
-          siteKey="6Lf-ymYrAAAAAPDFJIJwi-4W2KP9Zr3psRJavy1H"
+          siteKey="6Let624rAAAAAMVv6iJ4yG8VfbbVtSyElIjR1PYW"
           (resolved)="resolvedCaptcha($event)">
         </re-captcha>
       </div>
 
       <!-- Botón iniciar sesión -->
-      <button
-  type="submit"
-  class="btn btn-primary w-100 mt-4"
-  [disabled]="correoInput.invalid  || !captcha">
-  Iniciar Sesión
-</button>
-
+      <button type="submit" class="btn-login w-100 mt-4" [disabled]="correoInput.invalid || !captcha">
+        Iniciar Sesión
+      </button>
     </form>
 
-   
-
-    <!-- FORMULARIO RECUPERACIÓN: Ingresar Correo -->
+    <!-- FORMULARIO RECUPERACIÓN -->
     <form *ngIf="estado === 'recuperar'" (ngSubmit)="enviarRecuperacion()">
-      <div class="form-group">
+      <div class="form-group input-icon">
+        <i class="fas fa-envelope-open-text"></i>
         <label for="correoRecuperacion">Correo Electrónico</label>
         <input
           type="email"
@@ -95,14 +85,15 @@
       </div>
 
       <div class="mt-3 d-flex justify-content-between">
-        <button type="submit" class="btn btn-primary">Enviar Código</button>
+        <button type="submit" class="btn-login">Enviar Código</button>
         <button type="button" class="btn btn-secondary" (click)="estado = 'login'">Cancelar</button>
       </div>
     </form>
 
-    <!-- FORMULARIO CÓDIGO DE VERIFICACIÓN -->
+    <!-- FORMULARIO CÓDIGO -->
     <form *ngIf="estado === 'codigo'" (ngSubmit)="verificarCodigo()">
-      <div class="form-group">
+      <div class="form-group input-icon">
+        <i class="fas fa-key"></i>
         <label for="codigo">Código de Verificación</label>
         <input
           type="text"
@@ -115,12 +106,13 @@
           placeholder="Ingresa el código recibido"
         />
       </div>
-      <button type="submit" class="btn btn-primary w-100 mt-3">Verificar</button>
+      <button type="submit" class="btn-login w-100 mt-3">Verificar</button>
     </form>
 
     <!-- FORMULARIO NUEVA CONTRASEÑA -->
     <form *ngIf="estado === 'nueva'" (ngSubmit)="cambiarContrasena()">
-      <div class="form-group">
+      <div class="form-group input-icon">
+        <i class="fas fa-lock-open"></i>
         <label for="contrasenaNueva">Nueva Contraseña</label>
         <input
           type="password"
@@ -132,7 +124,8 @@
         />
       </div>
 
-      <div class="form-group mt-2">
+      <div class="form-group input-icon">
+        <i class="fas fa-check-circle"></i>
         <label for="confirmarContrasena">Confirmar Contraseña</label>
         <input
           type="password"
@@ -144,13 +137,122 @@
         />
       </div>
 
-      <button type="submit" class="btn btn-primary w-100 mt-3">Cambiar Contraseña</button>
+      <button type="submit" class="btn-login w-100 mt-3">Cambiar Contraseña</button>
     </form>
 
-    <!-- MENSAJE GLOBAL -->
+    <!-- MENSAJE -->
     <div *ngIf="mensaje" class="alert alert-info mt-3 text-center">
       {{ mensaje }}
     </div>
 
+    <!-- Footer -->
+    <div class="footer mt-4">
+      <div class="footer-logo">
+        <i class="fas fa-user-shield"></i>
+      </div>
+    </div>
   </div>
 </div>
+
+
+<!-- Estilos externos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.rtl.min.css" />
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<style>
+body {
+  background-color: #222;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #f5f5f5;
+}
+
+.login-container {
+  max-width: 420px;
+  width: 100%;
+  background: linear-gradient(to bottom right, rgba(34, 34, 34, 0.95), rgba(51, 0, 0, 0.95));
+  padding: 35px 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(128, 0, 0, 0.5);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+  color: #f5f5f5;
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.6);
+}
+
+.header {
+  background-color: #b30000;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  font-size: 20px;
+  text-transform: uppercase;
+  border-radius: 6px;
+}
+
+.input-icon {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-icon i {
+  position: absolute;
+  top: 38px;
+  left: 10px;
+  color: #b30000;
+  font-size: 16px;
+}
+
+.form-control {
+  padding-left: 35px;
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #666;
+  height: 45px;
+}
+
+.form-control:focus {
+  background-color: #555;
+  color: #fff;
+  border-color: #800000;
+  box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.25);
+}
+
+.btn-login {
+  background-color: #800000;
+  border: none;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #a00000;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.footer-logo {
+  width: 45px;
+  height: 45px;
+  background-color: white;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b30000;
+  font-size: 22px;
+}
+</style>

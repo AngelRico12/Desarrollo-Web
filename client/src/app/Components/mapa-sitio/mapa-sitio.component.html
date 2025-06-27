@@ -1,0 +1,103 @@
+
+<div class="d-flex justify-content-center align-items-center vh-100" style="background-image: url('assets/fondomapa.png'); background-size: cover; background-position: center;">
+<div class="sitemap-container">
+  <h2>Mapa del Sitio</h2>
+  <ul class="sitemap">
+    <li>
+      <span>M&W Club</span>
+      <ul class="sitemap">
+        <li>
+          <a routerLink="/inicio">Liga Deportiva</a>
+          <ul class="sitemap">
+            <li><a routerLink="/Rclub">Registrar Equipo</a></li>
+            <li>
+              <a routerLink="/login">Inicio de Sesión</a>
+              <ul class="sitemap">
+                <li><a routerLink="/Dashboard">Administrar Equipos</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+
+
+<style>
+        .sitemap-container {
+    padding: 80px 40px;
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .sitemap-container h2 {
+    text-align: center;
+    color: #ffdddd;
+    margin-bottom: 60px;
+    font-weight: bold;
+    font-size: 2.5rem;
+    }
+
+    .sitemap {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 auto;
+    max-width: 1000px;
+    position: relative;
+    font-size: 1.4rem;
+    }
+
+    .sitemap li {
+    position: relative;
+    margin-bottom: 60px;
+    padding-left: 40px;
+    }
+
+    .sitemap li::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18px;
+    border-left: 3px solid #800000;
+    height: 100%;
+    }
+
+    .sitemap li::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 18px;
+    width: 30px;
+    border-top: 3px solid #800000;
+    }
+
+    .sitemap span {
+    display: inline-block;
+    background-color: #800000;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1.6rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: background 0.3s;
+    }
+
+    .sitemap a {
+    display: inline-block;
+    color: #ffcfcf;
+    padding-left: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.3rem;
+    }
+
+    .sitemap a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    }
+
+</style>

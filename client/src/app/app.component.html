@@ -46,21 +46,37 @@
 </style>
 
 
-<footer class="text-white py-4" style="background-color: #800000;">
-  <div class="container text-center">
-    <h5 class="mb-3">Liga Deportiva</h5>
-    
-    <div class="mb-2">
-      <a href="https://facebook.com" target="_blank" class="text-white me-3">
-        <i class="bi bi-facebook"></i> Facebook
-      </a>
-      <a href="https://twitter.com" target="_blank" class="text-white">
-        <i class="bi bi-twitter-x"></i> X
-      </a>
+<footer class="text-white py-5" style="background-color: #800000;">
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <!-- Columna 1: Marca -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">Liga Deportiva</h5>
+        <p>📍 Dolores Hidalgo, Gto.</p>
+      </div>
+
+      <!-- Columna 2: Enlaces de redes sociales -->
+      <div class="col-md-4 mb-4">
+        <h6 class="text-uppercase">Síguenos</h6>
+        <a href="https://www.facebook.com/p/Pasi%C3%B3n-por-el-deporte-100063995206346/" target="_blank" class="text-white me-3 d-inline-block">
+          <i class="bi bi-facebook"></i> Facebook
+        </a><br>
+        <a href="https://x.com/clubdeportes" target="_blank" class="text-white d-inline-block">
+          <i class="bi bi-twitter-x"></i> X
+        </a>
+      </div>
+
+      <!-- Columna 3: Mapa del sitio -->
+      <div class="col-md-4 mb-4">
+        <h6 class="text-uppercase">Navegación</h6>
+        <a routerLink="/mapa-sitio" class="text-white text-decoration-none">
+          <i class="bi bi-map"></i> Mapa del Sitio
+        </a>
+      </div>
     </div>
-    
-    <div>
-      📍 Dolores Hidalgo, Gto.
+
+    <div class="text-center mt-4">
+      <small>&copy; 2025 Liga Deportiva. Todos los derechos reservados.</small>
     </div>
   </div>
 </footer>
