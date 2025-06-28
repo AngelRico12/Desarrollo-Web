@@ -46,3 +46,60 @@
 .navbar-brand.active img {
   filter: brightness(90%);
 }
+
+/* Estilo general */
+.search-bar {
+  background-color: #212529; /* bg-dark */
+  padding: 1rem 0;
+  color: white;
+}
+
+/* Contenedor del input y botón */
+.search-bar .search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Input de búsqueda */
+.search-bar input[type="text"] {
+  flex: 1 1 300px;
+  min-width: 250px;
+  max-width: 600px;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+}
+
+/* Botón de búsqueda */
+.search-bar button {
+  white-space: nowrap;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: 1px solid #fff;
+  background-color: transparent;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+  background-color: #e20a1ca4;
+  border-color: #e20a1ca4;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 576px) {
+  .search-bar .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar button {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+

@@ -9,32 +9,31 @@ import { filter } from 'rxjs';
   standalone: false
 })
 export class NavbarComponent {
+  searchQuery: string = '';
 
   dropdownAbierto = false;
-
   isLoggedIn = false;
   usuario: any = null;
-
   rol: string = '';
 
   constructor(private router: Router) {
     // Escuchar cambios en las rutas para actualizar el estado de la sesión
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd) // Filtrar los eventos de navegación
+      filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      this.checkUser(); // Re-verificar el estado del usuario en cada cambio de ruta
+      this.checkUser();
     });
   }
 
   ngOnInit(): void {
-    this.checkUser(); // Verificar el estado al cargar el componente por primera vez
+    this.checkUser();
   }
 
   checkUser() {
     const storedUser = localStorage.getItem('usuario');
     if (storedUser) {
-      this.usuario = JSON.parse(storedUser); // Suponiendo que el usuario está almacenado como un objeto JSON
-      this.rol = this.usuario.rol; // <-- aquí guardas el rol
+      this.usuario = JSON.parse(storedUser);
+      this.rol = this.usuario.rol;
       this.isLoggedIn = true;
     } else {
       this.isLoggedIn = false;
@@ -43,13 +42,39 @@ export class NavbarComponent {
   }
 
   logout(): void {
-    localStorage.removeItem('usuario'); // Eliminar el usuario del localStorage
+    localStorage.removeItem('usuario');
     this.isLoggedIn = false;
     this.usuario = null;
     window.location.reload();
     this.router.navigate(['/']);
-   
   }
 
+  buscar(): void {
+    const query = this.searchQuery.toLowerCase().trim();
 
+    const rutas = [
+      { keywords: ['registrar club', 'nuevo club', 'registro club', 'Registrar', 'registrar'], ruta: '/Rclub' },
+      { keywords: ['iniciar sesión','iniciar sesion',  'login', 'entrar'], ruta: '/login' },
+      { keywords: ['administrar', 'dueño', 'administrador sistema'], ruta: '/dueno' },
+      { keywords: ['equipo', 'mi equipo'], ruta: '/equipo' },
+      { keywords: ['editar usuario', 'perfil', 'editar'], ruta: '/editar-usuario' },
+      { keywords: ['inicio', 'home'], ruta: '/inicio' },
+      { keywords: ['mapa del sitio', 'mapa'], ruta: '/mapa-sitio' },
+      { keywords: ['preguntas frecuentes', 'faq', 'ayuda'], ruta: '/inicio', fragment: 'preguntas-frecuentes' }
+
+    ];
+
+    const resultado = rutas.find(entry =>
+      entry.keywords.some(keyword => query.includes(keyword))
+    );
+
+      if (resultado) {
+    this.router.navigate([resultado.ruta], {
+      fragment: resultado.fragment || undefined
+    });
+  } else {
+    // Redirigir a pantalla 404 personalizada
+    this.router.navigate(['/pagina-no-encontrada'], { queryParams: { q: this.searchQuery } });
+  }
+  }
 }

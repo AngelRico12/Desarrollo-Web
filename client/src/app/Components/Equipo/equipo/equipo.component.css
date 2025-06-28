@@ -1,229 +1,190 @@
+/* === Estilos Generales === */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url('../../../../assets/fondoAdmin.png');
+  min-height: 100vh;
+  background-image: url('../../../../assets/fondoequipos.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #f5f5f5;
 }
 
+/* Contenedor principal que incluye la info y la formación */
+.main-layout {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  margin: 20px;
+  max-width: 1200px; /* o el ancho que prefieras */
+}
 
+/* Contenedor de logo, título e info */
+.info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 280px;
+  max-width: 320px;
+}
 
+/* Ajustes para el título y logo */
+.falling-title {
+  margin-top: 30px;
+  font-size: 2.5rem;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+  animation: title-fall 1.2s ease-out forwards;
+  margin-bottom: 20px;
+}
 
-  
-  h1 {
-    margin: 20px 0;
-    color:#ccc;
+.club-logo-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.club-logo {
+  width: 120px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  margin-bottom: 20px;
+}
+
+.equipo-info {
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 15px 20px;
+  border-radius: 10px;
+  color: #f5f5f5;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Contenedor donde está el campo (field) */
+.formation-container {
+  flex: 1; /* Ocupa el espacio restante */
+  max-width: 700px; /* o lo que desees */
+}
+
+/* Móvil: volver layout vertical */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+    margin: 10px;
   }
-
-  select {
-    padding: 10px;
+  
+  .info-container {
+    max-width: 100%;
+    min-width: auto;
     margin-bottom: 20px;
-    font-size: 16px;
   }
   
   .formation-container {
-    width: 90%;
-    max-width: 800px;
-    text-align: center;
-    display: none;
-    
-    
+    max-width: 100%;
   }
-  
-  .field {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .bench {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  
-  .card {
-    width: 120px;
-    height: 160px;
-    background-image: url('/assets/carta.png');
-    background-color: transparent;
-    background-size: cover;
-    background-position: center;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    position: relative;
-  }
-  
-  
-  .position-label {
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    font-size: 12px;
-    padding: 2px 5px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    position: absolute; /* Posicionamiento absoluto */
-    top: 80%;
-    left: 58%;
-    transform: translate(-50%, -20%); /* Opcional: centra el label */
 }
 
 
-  .club-logo-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    
-  }
-  
-  .club-logo {
-    max-width: 150px;
-    max-height: 150px;
-    border-radius: 8px;
-    object-fit: contain;
-  }
-  
-  .club-logo-overlay {
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20%;
-    height: auto;
-    pointer-events: none;
-    
-  }
+.equipo-info p {
+  margin: 6px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
 
-/**/
+/* === Formación del Equipo === */
+.formation-container {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.field {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.card {
+  width: 120px;
+  height: 160px;
+  background-image: url('/assets/carta.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* Imagen del jugador */
+.player-photo {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Etiqueta de posición */
+.position-label {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* === Formularios emergentes === */
 .form-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-  
-  .form-popup form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-popup label,
-  .form-popup input {
-    margin-bottom: 10px;
-  }
-  
-  .form-popup button {
-    margin-top: 10px;
-  }
-  
-  .player-photo {
-    position: absolute;
-    top: 10%;
-    left: 50%;
-    max-width: 100px;
-    max-height: 100px;
-    border-radius: 8px;
-    object-fit: contain;
-    transform: translateX(-50%);
-  }
-  
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
-    gap: 20px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  /**/
-
-  /* Animación para la caída del logo */
-@keyframes logo-fall {
-  0% {
-    transform: translateY(-100px);
-    opacity: 0;
-  }
-  50% {
-    transform: translateY(30px);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  color: #000;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  max-width: 95%;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
 }
-
-/* Animación para la caída del título */
-@keyframes title-fall {
-  0% {
-    transform: translateY(-100px);
-    opacity: 0;
-  }
-  50% {
-    transform: translateY(30px);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Clase para aplicar la animación al logo */
-.falling-logo {
-  animation: logo-fall 1s ease-out forwards;
-}
-
-/* Clase para aplicar la animación al título */
-.falling-title {
-  animation: title-fall 1.2s ease-out forwards;
-  animation-delay: 0.5s; /* Retraso para que caiga después del logo */
-}
-
-
-/**/
 
 .formulario {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-height: 80vh; /* Limita la altura máxima del formulario */
-  overflow-y: auto; /* Permite desplazarse si el formulario es más grande que la pantalla */
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Tres columnas de igual ancho */
-  gap: 20px; /* Espacio entre las columnas */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .columna {
@@ -232,33 +193,63 @@ body {
   gap: 10px;
 }
 
-label {
-  font-weight: bold;
-}
-
+/* === Inputs y Selects === */
 input, select {
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  box-sizing: border-box;
 }
 
+/* === Botones === */
 button {
   padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  background-color: #4CAF50;
+  margin: 8px 5px 0;
+  font-size: 16px;
+  background-color: #390707;
   color: white;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #d26919;
 }
 
-/* Responsividad para pantallas pequeñas */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* === Responsive === */
 @media (max-width: 768px) {
+  .field {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card {
+    width: 100px;
+    height: 140px;
+  }
+
+  .player-photo {
+    width: 80px;
+    height: 80px;
+  }
+
   .form-grid {
-    grid-template-columns: 1fr; /* Apila las columnas en una sola fila en pantallas pequeñas */
+    grid-template-columns: 1fr;
+  }
+
+  h1, .falling-title {
+    font-size: 1.8rem;
+  }
+
+  input, select, button {
+    font-size: 14px;
   }
 }

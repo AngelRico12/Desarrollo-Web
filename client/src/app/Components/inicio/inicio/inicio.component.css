@@ -20,3 +20,7 @@
   opacity: 0.35; /* Ajusta la opacidad como desees */
   border: none;
 }
+
+html {
+  scroll-behavior: smooth;
+}

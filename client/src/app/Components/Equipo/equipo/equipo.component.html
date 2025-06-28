@@ -17,17 +17,16 @@
 
 <body>
 
-  <div class="club-logo-container">
-    <img *ngIf="clubLogoUrl" [src]="clubLogoUrl" alt="Logotipo del Club" class="club-logo falling-logo" />
-  </div>
-  
-  <h1 class="falling-title">Formaciones de Jugadores</h1>
-  
-  <div class="container" style="width: fit-content; max-width: 100%; background-color: black;opacity: 0.8; padding: 20px; border-radius: 8px; color: #f5f5f5;">
-    <!-- Aquí va la sección de Formaciones de Jugadores -->
-  
-    <div *ngIf="equipo.id_equipo" class="equipo-info">
+<div class="main-layout">
 
+  <div class="info-container">
+    <div class="club-logo-container">
+      <img *ngIf="clubLogoUrl" [src]="clubLogoUrl" alt="Logotipo del Club" class="club-logo falling-logo" />
+    </div>
+
+    <h1 class="falling-title">Formaciones de Jugadores</h1>
+
+    <div *ngIf="equipo.id_equipo" class="equipo-info">
       <p><strong>Categoría:</strong> {{ equipo.categoria }}</p>
       <p><strong>Colores:</strong> {{ equipo.colores }}</p>
       <p><strong>Juegos Ganados:</strong> {{ equipo.juegos_ganados }}</p>
@@ -44,7 +43,7 @@
     <p>Equipo no encontrado.</p>
   </div>
 
-  <div class="container" style="width: fit-content; max-width: 100%; background-image: url('/assets/fondoequipos.png'); padding: 20px; border-radius: 8px; color: #f5f5f5;" class="falling-title">
+  <div class="container" style="width: fit-content; max-width: 100%; background-image: url('/assets/fondofef.png'); padding: 20px; border-radius: 8px; color: #f5f5f5;" class="falling-title">
 
   <div *ngFor="let deporte of deportes" [id]="deporte.nombre" class="formation-container">
     <div class="field">
@@ -56,17 +55,7 @@
             alt="Foto del jugador" 
             class="player-photo" 
           />
-          <img 
-          [src]="clubLogoUrl" 
-          alt="Logotipo del Club" 
-          class="club-logo-overlay" 
-        />
-          <img 
-            *ngIf="!fotosJugadores[posicion] && clubLogoUrl" 
-            [src]="clubLogoUrl" 
-            alt="Logotipo del Club" 
-            class="club-logo-overlay" 
-          />
+
         </div>
         <div class="position-label">{{ posicion }}</div>
       </div>
@@ -120,7 +109,7 @@
         <input type="number" id="peso" [(ngModel)]="jugador.peso" name="peso" min="0" />
 
         <!-- Estatura -->
-        <label for="estatura">Estatura:</label>
+        <label for="estatura">Estatura (Cm):</label>
         <input type="number" id="estatura" [(ngModel)]="jugador.estatura" name="estatura" min="0" />
       </div>
 
@@ -257,6 +246,8 @@
     <button type="submit">Guardar</button>
     <button type="button" (click)="cerrarFormulario2()">Cerrar</button>
   </div>
+</div>
+
 </div>
 
 

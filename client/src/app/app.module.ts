@@ -20,6 +20,7 @@ import { RegistrarClubComponent } from './Components/registrar-club/registrar-cl
 import { NavbarComponent } from './Components/NavBar/navbar/navbar.component';
 import { InicioComponent } from './Components/inicio/inicio/inicio.component';
 import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component';
+import { PaginaNoEncontradaComponent } from './Components/pagina-no-encontrada/pagina-no-encontrada.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { MapaSitioComponent } from './Components/mapa-sitio/mapa-sitio.component
      NavbarComponent,
      InicioComponent,
      MapaSitioComponent,
+     PaginaNoEncontradaComponent,
   ],
   imports: [
     BrowserModule,

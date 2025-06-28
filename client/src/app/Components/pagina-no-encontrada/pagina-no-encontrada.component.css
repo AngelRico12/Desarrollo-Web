@@ -1,0 +1,18 @@
+.pagina-no-encontrada {
+  background-image: url('assets/err.png'); /* coloca tu imagen aquí */
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.pagina-no-encontrada .contenido {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  border-radius: 10px;
+}
