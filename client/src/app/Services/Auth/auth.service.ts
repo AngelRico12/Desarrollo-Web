@@ -1,10 +1,8 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { jwtDecode } from 'jwt-decode';
-
+import {jwtDecode} from 'jwt-decode';
 
 import API_URL from 'src/apiConfig';
 
@@ -27,24 +25,29 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(correo: string, contraseña: string): Observable<{ success: boolean; token?: string }> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const body = { correo, contraseña };
+  login(correo: string, contraseña: string): Observable<{ success: boolean; token?: string; correoIntentado?: string; message?: string }> {
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  const body = { correo, contraseña };
 
-    return this.http.post<{ success: boolean; token?: string }>(this.apiUrl, body, { headers }).pipe(
-      map((response) => {
-        if (response.success && response.token) {
-          this.guardarToken(response.token);
-          return { success: true, token: response.token };
-        }
-        return { success: false };
-      }),
-      catchError((err) => {
-        console.error('Error de autenticación:', err);
-        return throwError(() => new Error('Error en la autenticación.'));
-      })
-    );
-  }
+  return this.http.post<{ success: boolean; token?: string; correoIntentado?: string; message?: string }>(this.apiUrl, body, { headers }).pipe(
+    map((response) => {
+      if (response.success && response.token) {
+        this.guardarToken(response.token);
+        return { success: true, token: response.token };
+      }
+      return { success: false, correoIntentado: response.correoIntentado, message: response.message };
+    }),
+    catchError((err) => {
+      const errorBody = err.error;
+      console.error('Error de autenticación:', errorBody);
+      return of({
+        success: false,
+        correoIntentado: errorBody?.correoIntentado,
+        message: errorBody?.message || 'Error desconocido'
+      });
+    })
+  );
+}
 
   guardarToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
@@ -58,28 +61,28 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
   }
 
-estaAutenticado(): boolean {
-  const token = this.obtenerToken();
-  if (!token) return false;
+  estaAutenticado(): boolean {
+    const token = this.obtenerToken();
+    if (!token) return false;
 
-  try {
-    const payload = jwtDecode<JwtPayload>(token);
-    return payload.exp * 1000 > Date.now();
-  } catch {
-    return false;
+    try {
+      const payload = jwtDecode<JwtPayload>(token);
+      return payload.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   }
-}
 
-obtenerUsuario(): JwtPayload | null {
-  const token = this.obtenerToken();
-  if (!token) return null;
+  obtenerUsuario(): JwtPayload | null {
+    const token = this.obtenerToken();
+    if (!token) return null;
 
-  try {
-    return jwtDecode<JwtPayload>(token);
-  } catch {
-    return null;
+    try {
+      return jwtDecode<JwtPayload>(token);
+    } catch {
+      return null;
+    }
   }
-}
 
   logout(): void {
     this.eliminarToken();

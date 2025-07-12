@@ -58,46 +58,110 @@ ngOnInit(): void {
 
 
 
-  login(): void {
-    if (!this.captcha) {
-      this.mensaje = 'Por favor, completa el CAPTCHA.';
-      return;
-    }
-
-    this.authService.login(this.correo, this.contrasena).subscribe(
-      (res) => {
-        if (res?.success && res.token) {
-          try {
-            const decoded = jwtDecode<JwtPayload>(res.token);
-            this.usuarioTemporal = decoded;
-
-            this.modoVerificacion = 'login';
-            this.estado = 'codigo';
-
-            // Enviar código al correo
-            this.recuperaContraService.enviarCodigo(this.correo).subscribe(
-              (res) => {
-                this.codigoGenerado = res.codigo;
-                this.mensaje = 'Se envió un código de verificación al correo.';
-              },
-              () => {
-                this.mensaje = 'No se pudo enviar el código de verificación.';
-              }
-            );
-          } catch (err) {
-            this.mensaje = 'Error al procesar el token.';
-            console.error('Error al decodificar token:', err);
-          }
-        } else {
-          this.mensaje = 'Correo o contraseña incorrectos';
-        }
-      },
-      (error) => {
-        console.error('Error en el servidor:', error);
-        this.mensaje = 'Correo o contraseña incorrectos';
-      }
-    );
+login(): void {
+  if (!this.captcha) {
+    this.mensaje = 'Por favor, completa el CAPTCHA.';
+    return;
   }
+
+  if (this.estaBloqueadoFrontend(this.correo)) {
+    return; // mensaje ya seteado adentro
+  }
+
+  this.authService.login(this.correo, this.contrasena).subscribe(
+    (res) => {
+      if (res?.success && res.token) {
+        try {
+          const decoded = jwtDecode<JwtPayload>(res.token);
+          this.usuarioTemporal = decoded;
+          this.modoVerificacion = 'login';
+          this.estado = 'codigo';
+
+          // ✅ Limpiar intentos del frontend
+          const bloqueos = JSON.parse(localStorage.getItem('correos_bloqueados') || '{}');
+          delete bloqueos[this.correo];
+          localStorage.setItem('correos_bloqueados', JSON.stringify(bloqueos));
+
+          this.recuperaContraService.enviarCodigo(this.correo).subscribe(
+            (res) => {
+              this.codigoGenerado = res.codigo;
+              this.mensaje = 'Se envió un código de verificación al correo.';
+            },
+            () => {
+              this.mensaje = 'No se pudo enviar el código de verificación.';
+            }
+          );
+        } catch (err) {
+          this.mensaje = 'Error al procesar el token.';
+          console.error('Error al decodificar token:', err);
+        }
+      } else {
+        const fueBloqueado = this.registrarIntentoFallidoFrontend(this.correo);
+        this.mensaje = fueBloqueado
+          ? 'Demasiados intentos con este correo. Intenta nuevamente más tarde.'
+          : 'Correo o contraseña incorrectos.';
+      }
+    },
+    (error) => {
+      const fueBloqueado = this.registrarIntentoFallidoFrontend(this.correo);
+      this.mensaje = fueBloqueado
+        ? 'Demasiados intentos con este correo. Intenta nuevamente más tarde.'
+        : 'Correo o contraseña incorrectos.';
+    }
+  );
+}
+
+
+estaBloqueadoFrontend(correo: string): boolean {
+  const bloqueos = localStorage.getItem('correos_bloqueados');
+  if (!bloqueos) return false;
+
+  const datos = JSON.parse(bloqueos);
+  const info = datos[correo];
+
+  if (!info || !info.bloqueado_hasta) return false;
+
+  const ahora = new Date();
+  const hasta = new Date(info.bloqueado_hasta);
+
+  if (hasta > ahora) {
+    this.mensaje = `Demasiados intentos con este correo. Intenta nuevamente después de ${hasta.toLocaleString()}`;
+    return true;
+  }
+
+  // Bloqueo expirado
+  delete datos[correo];
+  localStorage.setItem('correos_bloqueados', JSON.stringify(datos));
+  return false;
+}
+
+
+registrarIntentoFallidoFrontend(correo: string): boolean {
+  const bloqueos = JSON.parse(localStorage.getItem('correos_bloqueados') || '{}');
+
+  if (!bloqueos[correo]) {
+    bloqueos[correo] = { intentos: 1 };
+  } else {
+    bloqueos[correo].intentos += 1;
+  }
+
+  let fueBloqueado = false;
+
+  if (bloqueos[correo].intentos >= 5) {
+    const hasta = new Date();
+    hasta.setMinutes(hasta.getMinutes() + 2); // ⏱ solo 2 minutos
+    bloqueos[correo].bloqueado_hasta = hasta.toISOString();
+    bloqueos[correo].intentos = 0;
+    fueBloqueado = true;
+  }
+
+  localStorage.setItem('correos_bloqueados', JSON.stringify(bloqueos));
+  return fueBloqueado;
+}
+
+
+
+
 
   resolvedCaptcha(token: string) {
     this.captcha = token;

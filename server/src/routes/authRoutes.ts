@@ -1,9 +1,13 @@
 import { Router } from 'express';
-import {loginEmpleado} from '../controllers/empleadoController'
+import {recibirIntentoFallido} from '../controllers/empleadoController'
 
 const router = Router();
 
 // Ruta para iniciar sesión
-router.post('/login', loginEmpleado);
+router.post('/loginF', recibirIntentoFallido);
+
+router.get('/ping', (req, res) => {
+  res.json({ message: 'pong' });
+});
 
 export default router;

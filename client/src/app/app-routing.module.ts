@@ -8,7 +8,7 @@ import { DuenoComponent } from './Components/Dueño/dueno/dueno.component';
 import { RegistrarClubComponent } from './Components/registrar-club/registrar-club/registrar-club.component';
 import { InicioComponent } from './Components/inicio/inicio/inicio.component';
 
-import { DashboardComponent} from './Components/Dashboards/dashboard/dashboard.component';
+
 import { LayoutComponent } from './Components/Layout/layout/layout.component';
 
 import { GestionEquiposComponent} from './Components/PaginasDashboard/gestion-equipos/gestion-equipos.component';
@@ -18,6 +18,8 @@ import { GestionSistemaComponent} from './Components/PaginasDashboard/gestion-si
 
 import { MapaSitioComponent} from './Components/mapa-sitio/mapa-sitio.component';
 
+import { EditarPerfilComponent}from './Components/editar-perfil/editar-perfil.component';
+
 const routes: Routes = [
   { path: 'equipo', component: EquipoComponent, canActivate: [AuthGuard], data: { roles: ['administrador_equipo'] } },
   { path: 'administrar', component: AdministrarComponent, canActivate: [AuthGuard], data: { roles: ['administrador_equipo'] } },
@@ -26,21 +28,71 @@ const routes: Routes = [
   { path: '', redirectTo: '/inicio', pathMatch: 'full' },
   { path: 'Rclub', component: RegistrarClubComponent},
   { path: 'inicio', component: InicioComponent},
-  { path: 'Dashboar', component: DashboardComponent},
+
   { path: 'mapa-sitio', component: MapaSitioComponent},
-   
+  { path: 'Perfil', component: EditarPerfilComponent},
   {
-    path: 'dashboard',
-    component: LayoutComponent, canActivate: [AuthGuard], data: { roles: ['administrador_sistema'] },
-    children: [
-      { path: 'Equipos', component: GestionEquiposComponent },
-      { path: 'Jugadores', component: GestionJugadoresComponent },
-      { path: 'Perfil', component: GestionPerfilComponent },
-      { path: 'Sistema', component: GestionSistemaComponent },
-      { path: 'Club', component: DuenoComponent },
-      { path: '', redirectTo: 'Perfil', pathMatch: 'full' }
-    ]
+  path: 'dashboard',
+  component: LayoutComponent, 
+  canActivate: [AuthGuard], 
+  data: { 
+    roles: ['administrador_sistema'],
+    breadcrumb: 'Perfil' // Cambiado de 'Dashboard' a 'Perfil'
   },
+  children: [
+    { 
+      path: 'Equipos', 
+      component: GestionEquiposComponent,
+      data: { 
+        breadcrumb: 'Equipos',
+        parentBreadcrumb: 'Perfil' // Nueva propiedad para relación jerárquica
+      }
+    },
+    { 
+      path: 'Jugadores', 
+      component: GestionJugadoresComponent,
+      data: { 
+        breadcrumb: 'Jugadores',
+        parentBreadcrumb: 'Perfil'
+      }
+    },
+    { 
+      path: 'Perfil', 
+      component: GestionPerfilComponent,
+      data: { 
+        breadcrumb: null, // Null para que no se duplique
+        hideParent: true // Oculta el breadcrumb padre en esta ruta
+      }
+    },
+    { 
+      path: 'Sistema', 
+      component: GestionSistemaComponent,
+      data: { 
+        breadcrumb: 'Sistema',
+        parentBreadcrumb: 'Perfil'
+      }
+    },
+    { 
+      path: 'Club', 
+      component: DuenoComponent,
+      data: { 
+        breadcrumb: 'Club',
+        parentBreadcrumb: 'Perfil'
+      }
+    },
+    { 
+      path: '', 
+      redirectTo: 'Perfil', 
+      pathMatch: 'full',
+      data: { 
+        breadcrumb: null, // Null para redirección
+        hideParent: true
+      }
+    }
+  ]
+},
+
+
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' }
 ];

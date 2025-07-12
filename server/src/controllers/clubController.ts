@@ -3,6 +3,7 @@ import pool from '../database';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
 
 // Configuración de Multer para almacenar logotipos y certificados
 const storage = multer.diskStorage({
@@ -14,17 +15,15 @@ const storage = multer.diskStorage({
       return;
     }
 
-    // Sanear el nombre para evitar problemas en el sistema de archivos
     const sanitizedNombre = nombre.replace(/[^a-zA-Z0-9]/g, '_');
     const baseDir = path.join(__dirname, '../../uploads', sanitizedNombre);
-    const specificDir = path.join(baseDir, file.fieldname); // Crear subcarpeta según el tipo de archivo
+    const specificDir = path.join(baseDir, file.fieldname);
 
-    // Crear la estructura de carpetas si no existe
     if (!fs.existsSync(specificDir)) {
       fs.mkdirSync(specificDir, { recursive: true });
     }
 
-    cb(null, specificDir); // Define la subcarpeta para "certificado" o "logotipo"
+    cb(null, specificDir);
   },
   filename: (req, file, cb) => {
     if (file.fieldname === 'logotipo') {
@@ -32,61 +31,84 @@ const storage = multer.diskStorage({
     } else if (file.fieldname === 'certificado') {
       cb(null, 'certificado.pdf');
     } else {
-      // En caso de otro campo, usar nombre original saneado
       const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
       cb(null, sanitizedFileName);
     }
   },
 });
 
-// Configuración de Multer para manejar múltiples archivos
 export const upload = multer({ storage });
 
-// Define el tipo específico para los archivos en `req.files`
 interface MulterRequest extends Request {
   files: {
     [fieldname: string]: Express.Multer.File[];
   };
 }
 
-// Controlador para registrar un nuevo club
+// Función para calcular el hash SHA-256 de un archivo
+function calcularHashArchivo(filePath: string): string {
+  const archivo = fs.readFileSync(filePath);
+  return crypto.createHash('sha256').update(archivo).digest('hex');
+}
+
+// Controlador actualizado
 export const registerClub = async (req: Request, res: Response): Promise<void> => {
   const { nombre, correo } = req.body;
-
-  // Asegúrate de que req sea del tipo MulterRequest para que TypeScript lo reconozca
   const files = (req as MulterRequest).files;
 
-  // Función para transformar la ruta almacenada en path relativo a '/uploads/'
-  const transformPath = (filePath: string) =>
-    '/' + filePath.replace(path.join(__dirname, '../../'), '').replace(/\\/g, '/');
-
-  const certificadoPath = files?.['certificado']?.[0]?.path
-    ? transformPath(files['certificado'][0].path)
-    : null;
-
-  const logotipoPath = files?.['logotipo']?.[0]?.path
-    ? transformPath(files['logotipo'][0].path)
-    : null;
-
-  if (!nombre || !correo || !certificadoPath || !logotipoPath) {
-    res.status(400).json({ success: false, message: 'Todos los campos y archivos son obligatorios.' });
+  // Validaciones de entrada
+  if (
+    typeof nombre !== 'string' ||
+    typeof correo !== 'string' ||
+    !/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(correo) ||
+    nombre.trim().length < 3 ||
+    nombre.trim().length > 100
+  ) {
+    res.status(400).json({ success: false, message: 'Nombre o correo inválidos.' });
     return;
   }
 
+  if (!files?.['certificado'] || !files?.['logotipo']) {
+    res.status(400).json({ success: false, message: 'Debe enviar certificado y logotipo.' });
+    return;
+  }
+
+  const certificadoFile = files['certificado'][0];
+  const logotipoFile = files['logotipo'][0];
+
+  // Convertir rutas a relativas
+  const transformPath = (filePath: string) =>
+    '/' + filePath.replace(path.join(__dirname, '../../'), '').replace(/\\/g, '/');
+
+  const certificadoPath = transformPath(certificadoFile.path);
+  const logotipoPath = transformPath(logotipoFile.path);
+
+  // ✅ Calcular hash SHA-256 de los archivos
+  const certificadoHash = calcularHashArchivo(certificadoFile.path);
+  const logotipoHash = calcularHashArchivo(logotipoFile.path);
+
   try {
-    // Insertar el club en la base de datos con estado "pendiente"
     const result = await pool.query(
-      'INSERT INTO club (nombre, correo, certificado, logotipo, estado) VALUES (?, ?, ?, ?, ?)',
-      [nombre, correo, certificadoPath, logotipoPath, 'pendiente']
+      `INSERT INTO club (nombre, correo, certificado, certificado_hash, logotipo, logotipo_hash, estado)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [nombre, correo, certificadoPath, certificadoHash, logotipoPath, logotipoHash, 'pendiente']
     );
 
     const clubId = result.insertId;
 
-    // Responder con éxito y enviar detalles del club registrado
     res.status(201).json({
       success: true,
       message: 'Registro exitoso. El club está en estado pendiente de aprobación.',
-      club: { id_club: clubId, nombre, correo, certificado: certificadoPath, logotipo: logotipoPath, estado: 'pendiente' },
+      club: {
+        id_club: clubId,
+        nombre,
+        correo,
+        certificado: certificadoPath,
+        certificado_hash: certificadoHash,
+        logotipo: logotipoPath,
+        logotipo_hash: logotipoHash,
+        estado: 'pendiente',
+      },
     });
   } catch (error) {
     console.error('Error al registrar el club:', error);

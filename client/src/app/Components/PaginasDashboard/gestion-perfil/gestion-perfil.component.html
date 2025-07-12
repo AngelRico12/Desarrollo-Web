@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <app-breadcrumb></app-breadcrumb>
+  <app-breadcrumb></app-breadcrumb>
   <h2 class="mb-4">Perfil del Administrador</h2>
 
   <!-- NOMBRE -->
@@ -69,6 +69,8 @@
         class="form-control"
         [disabled]="!editando.contrasena"
         required
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
+        #contrasenaInput="ngModel"
       />
       <button
         type="button"
@@ -80,8 +82,19 @@
       </button>
     </div>
 
+    <!-- Mensaje de advertencia -->
+    <div *ngIf="editando.contrasena && contrasenaInput.invalid && contrasenaInput.touched" class="text-danger mt-1">
+      La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.
+    </div>
+
     <div *ngIf="editando.contrasena" class="mt-2">
-      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('contrasena')">Guardar</button>
+      <button 
+        class="btn btn-primary btn-sm me-2" 
+        (click)="guardarCampo('contrasena')"
+        [disabled]="contrasenaInput.invalid"
+      >
+        Guardar
+      </button>
       <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('contrasena')">Cancelar</button>
     </div>
   </div>

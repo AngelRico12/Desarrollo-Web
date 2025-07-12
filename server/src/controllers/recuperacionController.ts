@@ -27,7 +27,7 @@ export const enviarCodigo: RequestHandler = async (req, res) => {
   const mensaje = {
     from: 'mitsimy@gmail.com',
     to: correo,
-    subject: 'Recuperación de Contraseña',
+    subject: 'Codigo de verificacion',
     html: `<p>Tu código de verificación es: <b>${codigo}</b></p>`,
   };
 

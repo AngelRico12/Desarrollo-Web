@@ -1,0 +1,106 @@
+<div class="container mt-4">
+  <app-breadcrumb></app-breadcrumb>
+  <h2 class="mb-4">Editar Perfil del Club</h2>
+
+  <!-- Nombre -->
+  <div class="form-group mb-3">
+    <label>Nombre del Club</label>
+    <div class="d-flex align-items-center">
+      <input
+        type="text"
+        [(ngModel)]="club.nombre"
+        name="nombre"
+        class="form-control"
+        [disabled]="!editando.nombre"
+        required
+      />
+      <button type="button" class="btn btn-sm btn-link ms-2" (click)="activarEdicion('nombre')">✏️</button>
+    </div>
+
+    <div *ngIf="editando.nombre" class="mt-2">
+      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('nombre')">Guardar</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('nombre')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Correo -->
+  <div class="form-group mb-3">
+    <label>Correo</label>
+    <div class="d-flex align-items-center">
+      <input
+        type="email"
+        [(ngModel)]="club.correo"
+        name="correo"
+        class="form-control"
+        [disabled]="!editando.correo"
+        required
+      />
+      <button type="button" class="btn btn-sm btn-link ms-2" (click)="activarEdicion('correo')">✏️</button>
+    </div>
+
+    <div *ngIf="editando.correo" class="mt-2">
+      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('correo')">Guardar</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('correo')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Contraseña -->
+  <div class="form-group mb-3">
+    <label>Nueva Contraseña</label>
+    <div class="d-flex align-items-center">
+      <input
+        type="password"
+        [(ngModel)]="contrasena"
+        name="contraseña"
+        class="form-control"
+        placeholder="Deja en blanco para mantener la actual"
+        [disabled]="!editando.contrasena"
+      />
+      <button type="button" class="btn btn-sm btn-link ms-2" (click)="activarEdicion('contraseña')">✏️</button>
+    </div>
+
+    <div *ngIf="editando.contrasena" class="mt-2">
+      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('contraseña')">Guardar</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('contraseña')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Logotipo -->
+  <div class="form-group mb-3">
+    <label>Logotipo</label>
+    <div class="d-flex align-items-center">
+      <input
+        type="file"
+        id="logotipo"
+        class="form-control"
+        (change)="onFileChange($event)"
+        accept="image/*"
+        [disabled]="!editando.logotipo"
+      />
+      <button type="button" class="btn btn-sm btn-link ms-2" (click)="activarEdicion('logotipo')">✏️</button>
+    </div>
+
+    <div *ngIf="editando.logotipo" class="mt-2">
+      <button class="btn btn-primary btn-sm me-2" (click)="guardarCampo('logotipo')">Guardar</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelarCampo('logotipo')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Vista previa del logotipo actual -->
+  <div class="mb-3" *ngIf="club.logotipo">
+    <label class="form-label">Vista previa del logo actual:</label><br />
+    <img [src]="club.logotipo" alt="Logo actual" width="150" />
+  </div>
+
+  <!-- Botón de baja -->
+  <div class="mt-4">
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="solicitarBaja()"
+      [disabled]="cargando"
+    >
+      Solicitar baja
+    </button>
+  </div>
+</div>

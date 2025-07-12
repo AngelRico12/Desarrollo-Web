@@ -1,0 +1,5 @@
+{"correo":"angel@gmail.com","intentos_fallidos":1,"ip":"::1","level":"warn","message":"Contraseña incorrecta","timestamp":"2025-07-11T16:56:41.926Z"}
+{"correo":"angel@gmail.com","intentos_fallidos":2,"ip":"::1","level":"warn","message":"Contraseña incorrecta","timestamp":"2025-07-12T03:21:51.983Z"}
+{"correo":"angel@gmail.com","intentos_fallidos":3,"ip":"::1","level":"warn","message":"Contraseña incorrecta","timestamp":"2025-07-12T03:21:53.512Z"}
+{"correo":"angel@gmail.com","intentos_fallidos":4,"ip":"::1","level":"warn","message":"Contraseña incorrecta","timestamp":"2025-07-12T03:21:55.010Z"}
+{"correo":"angel@gmail.com","intentos_fallidos":5,"ip":"::1","level":"warn","message":"Cuenta bloqueada por intentos fallidos","timestamp":"2025-07-12T03:21:55.994Z"}

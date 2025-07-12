@@ -12,6 +12,10 @@ declare var bootstrap: any; // Importa Bootstrap globalmente
   standalone: false
 })
 export class RegistrarClubComponent {
+
+avisoAceptado: boolean = false;
+
+
   nombre: string = '';
   correo: string = '';
   certificado: File | null = null;

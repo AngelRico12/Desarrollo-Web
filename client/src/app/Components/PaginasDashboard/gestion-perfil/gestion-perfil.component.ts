@@ -16,7 +16,7 @@ export class GestionPerfilComponent implements OnInit {
     correo: string;
     contrasena: string;
   } = {
-    id_usuario: 48,
+    id_usuario: 1,
     nombre: '',
     correo: '',
     contrasena: ''

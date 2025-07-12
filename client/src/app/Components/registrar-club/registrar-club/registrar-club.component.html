@@ -103,17 +103,65 @@
         </re-captcha>
       </div>
 
+      <!-- Aviso de Privacidad (Checkbox + Modal Link) -->
+<div class="form-group mt-3 text-light">
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      id="avisoPrivacidad"
+      name="avisoPrivacidad"
+      [(ngModel)]="avisoAceptado"
+      required />
+    <label class="form-check-label" for="avisoPrivacidad">
+      He leído y acepto el
+      <a href="#" data-bs-toggle="modal" data-bs-target="#avisoModal" class="text-decoration-underline text-light">
+        aviso de privacidad
+      </a>.
+    </label>
+  </div>
+</div>
+
+
       <!-- Botón para Registrar -->
       <button
         type="submit"
         class="btn-register w-100 mt-4"
-        [disabled]="form.invalid || !certificado || !logotipo || !captcha || correoValido === false">
+        [disabled]="form.invalid || !certificado || !logotipo || !captcha || !avisoAceptado || correoValido === false" >
         Registrar Club
       </button>
 
     </form>
   </div>
 </div>
+
+
+<!-- Modal de Aviso de Privacidad -->
+<div class="modal fade" id="avisoModal" tabindex="-1" aria-labelledby="avisoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="avisoModalLabel">Aviso de Privacidad</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, informamos que los datos personales recabados a través de este formulario serán utilizados únicamente para el registro, validación y contacto con clubes deportivos que deseen formar parte de nuestra plataforma.
+        </p>
+        <p>
+          Los datos no serán compartidos con terceros sin su consentimiento, y usted podrá ejercer en cualquier momento sus derechos de acceso, rectificación, cancelación y oposición (ARCO) comunicándose con nosotros al correo <strong>angelrico122001&#64;gmail.com</strong>.
+        </p>
+        <p>
+          Para cualquier duda sobre nuestro manejo de información, puede consultar este aviso o contactarnos directamente.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <style>
   .register-club-container {
