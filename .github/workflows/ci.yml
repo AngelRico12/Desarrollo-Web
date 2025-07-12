@@ -1,0 +1,38 @@
+name: Auditoría de dependencias
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  auditar-dependencias:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Backend
+      - name: Instalar dependencias backend
+        working-directory: ./server
+        run: npm ci
+
+      - name: Auditoría backend
+        working-directory: ./server
+        run: npm audit --audit-level=high
+
+      # Frontend
+      - name: Instalar dependencias frontend
+        working-directory: ./client
+        run: npm ci
+
+      - name: Auditoría frontend
+        working-directory: ./client
+        run: npm audit --audit-level=high
