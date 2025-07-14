@@ -17,6 +17,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = __importDefault(require("../database"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const logger_1 = __importDefault(require("../utils/logger"));
+const mailer_1 = require("../utils/mailer");
 const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { correo, contraseña } = req.body;
     try {
@@ -51,6 +52,11 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     ip: req.ip,
                     intentos_fallidos: nuevosIntentos
                 });
+                // Enviar alerta por correo
+                yield (0, mailer_1.enviarAlertaCorreo)('angelrico122001@gmail.com', // pon aquí tu correo de administrador o seguridad
+                `Alerta: Cuenta bloqueada - usuario ${usuario.correo}`, `<p>La cuenta con correo <b>${usuario.correo}</b> ha sido bloqueada por ${nuevosIntentos} intentos fallidos consecutivos.</p>
+           <p>IP: ${req.ip}</p>
+           <p>Fecha: ${new Date().toLocaleString()}</p>`);
                 res.status(403).json({
                     success: false,
                     message: 'Demasiados intentos fallidos. Cuenta bloqueada por 15 minutos.'

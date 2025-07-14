@@ -53,7 +53,7 @@ export class LoginComponent {
 
 ngOnInit(): void {
   const usuario = this.authService.obtenerUsuario();
-  console.log('Usuario decodificado:', usuario);
+  
 }
 
 
@@ -93,7 +93,7 @@ login(): void {
           );
         } catch (err) {
           this.mensaje = 'Error al procesar el token.';
-          console.error('Error al decodificar token:', err);
+          
         }
       } else {
         const fueBloqueado = this.registrarIntentoFallidoFrontend(this.correo);
@@ -165,7 +165,7 @@ registrarIntentoFallidoFrontend(correo: string): boolean {
 
   resolvedCaptcha(token: string) {
     this.captcha = token;
-    console.log('Captcha resuelto:', token);
+    
   }
 
   enviarRecuperacion() {

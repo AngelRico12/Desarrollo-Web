@@ -1,20 +1,55 @@
 import { Request, Response } from 'express';
 import db from '../database';
 import nodemailer from 'nodemailer';
-import { randomBytes } from 'crypto';
+import { randomBytes, createHash } from 'crypto';
 import bcrypt from 'bcryptjs';
-
+import fs from 'fs';
+import path from 'path';
+import { enviarAlertaCorreo } from '../utils/mailer';
 
 class ClubController {
+  // Función para calcular hash SHA-256 de un archivo
+  static calcularHash(filePath: string): string | null {
+    try {
+      const buffer = fs.readFileSync(filePath);
+      return createHash('sha256').update(buffer).digest('hex');
+    } catch {
+      return null;
+    }
+  }
+
   // Listar solicitudes de clubes
   static async listarSolicitudes(req: Request, res: Response): Promise<void> {
     try {
       const solicitudes = await db.query('SELECT * FROM club WHERE estado = ?', ['pendiente']);
 
-      solicitudes.forEach((club: any) => {
-        club.certificado = `http://localhost:3000${club.certificado.replace(/\\/g, '/')}`;
-        club.logotipo = `http://localhost:3000${club.logotipo.replace(/\\/g, '/')}`;
-      });
+      for (const club of solicitudes) {
+        const certificadoAbs = path.join(__dirname, '../../', club.certificado);
+        const logotipoAbs = path.join(__dirname, '../../', club.logotipo);
+
+        const hashCert = ClubController.calcularHash(certificadoAbs);
+        const hashLogo = ClubController.calcularHash(logotipoAbs);
+
+        if (hashCert && hashCert !== club.certificado_hash) {
+          await enviarAlertaCorreo(
+            'mitsimy@gmail.com',
+            '⚠️ Alerta: Certificado Modificado',
+            `<p>El certificado del club <b>${club.nombre}</b> ha sido modificado.</p>`
+          );
+        }
+
+        if (hashLogo && hashLogo !== club.logotipo_hash) {
+          await enviarAlertaCorreo(
+            'mitsimy@gmail.com',
+            '⚠️ Alerta: Logotipo Modificado',
+            `<p>El logotipo del club <b>${club.nombre}</b> ha sido modificado.</p>`
+          );
+        }
+
+        // Convertir ruta a URL accesible
+        club.certificado = `https://localhost:3000${club.certificado.replace(/\\/g, '/')}`;
+        club.logotipo = `https://localhost:3000${club.logotipo.replace(/\\/g, '/')}`;
+      }
 
       res.status(200).json(solicitudes);
     } catch (error) {
@@ -41,7 +76,7 @@ class ClubController {
 
       const { nombre, correo } = club[0];
       const contraseña = randomBytes(8).toString('hex');
-      const hashedPassword = await bcrypt.hash(contraseña, 10); // 🔐 Encriptar la contraseña
+      const hashedPassword = await bcrypt.hash(contraseña, 10);
 
       await connection.query(
         'INSERT INTO usuario (nombre, correo, contraseña, rol, id_club) VALUES (?, ?, ?, ?, ?)',
@@ -86,8 +121,8 @@ class ClubController {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'mitsimy@gmail.com', // Cambiar por tu correo real
-        pass: 'nxkl umfw mmho geaa', // Cambiar por tu contraseña real o app password
+        user: 'mitsimy@gmail.com',
+        pass: 'nxkl umfw mmho geaa',
       },
     });
 
@@ -111,4 +146,3 @@ class ClubController {
 }
 
 export default ClubController;
-

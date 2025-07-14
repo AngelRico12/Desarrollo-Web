@@ -2,9 +2,8 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import pool from '../database';
 import bcrypt from 'bcryptjs';
-
 import logger from '../utils/logger';
-
+import { enviarAlertaCorreo } from '../utils/mailer';
 
 interface Usuario {
   id_usuario: number;
@@ -65,6 +64,15 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
           ip: req.ip,
           intentos_fallidos: nuevosIntentos
         });
+
+        // Enviar alerta por correo
+        await enviarAlertaCorreo(
+          'angelrico122001@gmail.com',  // pon aquí tu correo de administrador o seguridad
+          `Alerta: Cuenta bloqueada - usuario ${usuario.correo}`,
+          `<p>La cuenta con correo <b>${usuario.correo}</b> ha sido bloqueada por ${nuevosIntentos} intentos fallidos consecutivos.</p>
+           <p>IP: ${req.ip}</p>
+           <p>Fecha: ${new Date().toLocaleString()}</p>`
+        );
 
         res.status(403).json({
           success: false,

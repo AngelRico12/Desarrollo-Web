@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc -w",
     "dev": "nodemon build/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    
+    "audit": "npm audit --audit-level=high"
   },
   "keywords": [],
   "author": "",

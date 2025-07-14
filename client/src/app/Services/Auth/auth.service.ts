@@ -39,7 +39,7 @@ export class AuthService {
     }),
     catchError((err) => {
       const errorBody = err.error;
-      console.error('Error de autenticación:', errorBody);
+      
       return of({
         success: false,
         correoIntentado: errorBody?.correoIntentado,
