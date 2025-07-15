@@ -18,8 +18,8 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
         with:
           args: >
             -Dsonar.projectKey=AngelRico12_Desarrollo-Web
             -Dsonar.organization=angelrico12
-            -Dsonar.host.url=https://sonarcloud.io
