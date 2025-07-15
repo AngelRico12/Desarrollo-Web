@@ -40,3 +40,4 @@ jobs:
             -Dsonar.projectKey=AngelRico12_Desarrollo-Web
             -Dsonar.organization=angelrico12
             -Dsonar.projectBaseDir=client
+            
