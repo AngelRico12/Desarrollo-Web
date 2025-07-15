@@ -21,5 +21,3 @@ jobs:
           args: >
             -Dsonar.projectKey=Desarrollo-Web
             -Dsonar.sources=.
-
-
