@@ -26,3 +26,4 @@ jobs:
           args: >
             -Dsonar.projectKey=AngelRico12_Desarrollo-Web
             -Dsonar.organization=angelrico12
+
