@@ -3,7 +3,7 @@ import { AdministrarComponent } from './administrar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+
 
 // Mock para Router
 class RouterStub {
