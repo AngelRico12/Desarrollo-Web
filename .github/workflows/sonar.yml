@@ -11,8 +11,10 @@ on:
 jobs:
   build-and-scan:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -29,10 +31,12 @@ jobs:
         run: npm run build --if-present
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
         with:
           args: >
             -Dsonar.projectKey=AngelRico12_Desarrollo-Web
             -Dsonar.organization=angelrico12
+            -Dsonar.projectBaseDir=client
