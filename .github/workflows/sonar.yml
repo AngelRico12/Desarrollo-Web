@@ -1,4 +1,4 @@
-name: SonarQube Scan
+name: SonarCloud Scan
 
 on:
   push:
@@ -9,16 +9,29 @@ on:
       - master
 
 jobs:
-  sonarQube:
+  sonarcloud:
+    name: SonarCloud Analysis
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Cambia si usas otra versión
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
         with:
           args: >
             -Dsonar.projectKey=AngelRico12_Desarrollo-Web
