@@ -1,0 +1,19 @@
+name: SonarQube Scan
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  sonarQube:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v1
+        with:
+          host-url: http://localhost:9000
+          token: sqp_e64608ae14e48f41212422e2bc303c0f00c0ca33
+
