@@ -8,7 +8,7 @@ on:
 
 jobs:
   sonarQube:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # 👈 Esto ejecuta el job en tu máquina local
     steps:
       - uses: actions/checkout@v3
 
