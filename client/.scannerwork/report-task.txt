@@ -1,0 +1,6 @@
+projectKey=Desarrollo-Web
+serverUrl=http://localhost:9000
+serverVersion=25.7.0.110598
+dashboardUrl=http://localhost:9000/dashboard?id=Desarrollo-Web
+ceTaskId=47b0ebbf-81f8-4e02-964e-8153256c53f4
+ceTaskUrl=http://localhost:9000/api/ce/task?id=47b0ebbf-81f8-4e02-964e-8153256c53f4
