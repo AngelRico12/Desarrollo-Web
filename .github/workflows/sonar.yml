@@ -28,7 +28,7 @@ jobs:
 
       - name: Run tests with coverage
         working-directory: ./client
-        run: ng test --karma-config karma.conf.js --code-coverage --watch=false
+        run: ./node_modules/.bin/ng test --karma-config karma.conf.js --code-coverage --watch=false
 
       - name: Build project
         working-directory: ./client
