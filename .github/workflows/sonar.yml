@@ -51,3 +51,4 @@ jobs:
             -Dsonar.organization=angelrico12
             -Dsonar.projectBaseDir=client
             -Dsonar.javascript.lcov.reportPaths=coverage/client/lcov.info
+            -Dsonar.scanner.forceDeprecatedSonarScannerEngine=true
