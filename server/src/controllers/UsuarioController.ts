@@ -96,9 +96,9 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Login exitoso: limpia los intentos
+    // Login exitoso: limpia los intentos y actualiza ultima_sesion
     await pool.query(
-      `UPDATE usuario SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = ?`,
+      `UPDATE usuario SET intentos_fallidos = 0, bloqueado_hasta = NULL, ultima_sesion = NOW() WHERE id_usuario = ?`,
       [usuario.id_usuario]
     );
 

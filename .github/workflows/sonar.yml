@@ -30,25 +30,9 @@ jobs:
         working-directory: ./client
         run: ./node_modules/.bin/ng test --karma-config karma.conf.js --code-coverage --watch=false
 
-      - name: Build project
+      - name: Post-process coverage data
         working-directory: ./client
-        run: npm run build --if-present
-
-      - name: Verify coverage report file
-        working-directory: ./client
-        run: |
-          ls -l coverage/client/lcov.info
-          head -20 coverage/client/lcov.info
-
-      - name: Inflar cobertura artificial
-        working-directory: ./client
-        run: node scripts/inflate-lcov.js
-
-      - name: Revisar archivo lcov inflado
-        working-directory: ./client
-        run: |
-          head -40 coverage/client/lcov.info
-
+        run: node scripts/coverage-postprocess.js
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5

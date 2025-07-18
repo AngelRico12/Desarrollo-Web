@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import API_URL from 'src/apiConfig';
 
@@ -25,29 +25,37 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(correo: string, contraseña: string): Observable<{ success: boolean; token?: string; correoIntentado?: string; message?: string }> {
-  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  const body = { correo, contraseña };
+  login(
+    correo: string,
+    contraseña: string
+  ): Observable<{ success: boolean; token?: string; correoIntentado?: string; message?: string }> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = { correo, contraseña };
 
-  return this.http.post<{ success: boolean; token?: string; correoIntentado?: string; message?: string }>(this.apiUrl, body, { headers }).pipe(
-    map((response) => {
-      if (response.success && response.token) {
-        this.guardarToken(response.token);
-        return { success: true, token: response.token };
-      }
-      return { success: false, correoIntentado: response.correoIntentado, message: response.message };
-    }),
-    catchError((err) => {
-      const errorBody = err.error;
-      
-      return of({
-        success: false,
-        correoIntentado: errorBody?.correoIntentado,
-        message: errorBody?.message || 'Error desconocido'
-      });
-    })
-  );
-}
+    return this.http.post<{ success: boolean; token?: string; correoIntentado?: string; message?: string }>(this.apiUrl, body, { headers }).pipe(
+      map((response) => {
+        if (response.success && response.token) {
+          this.guardarToken(response.token);
+          return { success: true, token: response.token };
+        }
+        // No se pasa el mensaje crudo, sólo uno genérico
+        return {
+          success: false,
+          correoIntentado: response.correoIntentado,
+          message: 'Correo o contraseña incorrectos.' // Mensaje genérico
+        };
+      }),
+      catchError((err) => {
+        // Aquí puedes registrar el error con algún logger si tienes backend logging
+        // pero para el usuario sólo devuelves mensaje genérico
+        return of({
+          success: false,
+          correoIntentado: undefined,
+          message: 'Ocurrió un error al procesar la solicitud. Por favor, intente más tarde.'
+        });
+      })
+    );
+  }
 
   guardarToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);

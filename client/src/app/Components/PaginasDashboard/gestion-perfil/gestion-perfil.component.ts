@@ -9,7 +9,6 @@ import API_URL from 'src/apiConfig';
 export class GestionPerfilComponent implements OnInit {
   API_URL = API_URL;
 
-  // Tipado explícito
   usuario: {
     id_usuario: number;
     nombre: string;
@@ -22,7 +21,6 @@ export class GestionPerfilComponent implements OnInit {
     contrasena: ''
   };
 
-  // Copia temporal con mismo tipo
   copiaUsuario: {
     nombre: string;
     correo: string;
@@ -33,7 +31,6 @@ export class GestionPerfilComponent implements OnInit {
     contrasena: ''
   };
 
-  // Estado de edición, tipado explícito
   editando: {
     nombre: boolean;
     correo: boolean;
@@ -80,12 +77,34 @@ export class GestionPerfilComponent implements OnInit {
   }
 
   guardarCampo(campo: 'nombre' | 'correo' | 'contrasena') {
-    const datosActualizar = { [campo]: this.usuario[campo] };
+    const valor = this.usuario[campo].trim();
+
+    // Validar campo no vacío
+    if (!valor) {
+      this.mensaje = `El campo "${campo}" no puede estar vacío.`;
+      return;
+    }
+
+    // Validación específica para correo
+    if (campo === 'correo' && !this.validarCorreo(valor)) {
+      this.mensaje = 'Correo inválido.';
+      return;
+    }
+
+    // Aquí podrías agregar validación para contraseña si deseas
+    if (campo === 'contrasena' && valor.length < 6) {
+      this.mensaje = 'La contraseña debe tener al menos 6 caracteres.';
+      return;
+    }
+
+    // Escapar caracteres especiales para evitar inyección XSS
+    const datosActualizar = { [campo]: this.escapar(valor) };
 
     this.http.put<any>(`${this.API_URL}/api/perfil/${this.usuario.id_usuario}`, datosActualizar).subscribe(
       res => {
         if (res.success) {
           this.mensaje = `Campo "${campo}" actualizado correctamente.`;
+          this.usuario[campo] = valor; // Guardar valor sin escapar en modelo (opcional, para mostrar limpio)
           this.editando[campo] = false;
         } else {
           this.mensaje = `No se pudo actualizar el campo "${campo}".`;
@@ -96,5 +115,21 @@ export class GestionPerfilComponent implements OnInit {
         this.mensaje = `Error al actualizar el campo "${campo}".`;
       }
     );
+  }
+
+  // Función para validar correo con expresión regular
+  validarCorreo(correo: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(correo);
+  }
+
+  // Función para escapar caracteres especiales y evitar XSS
+  escapar(entrada: string): string {
+    return entrada
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 }

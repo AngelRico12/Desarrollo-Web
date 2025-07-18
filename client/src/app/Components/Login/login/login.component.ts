@@ -29,9 +29,7 @@ export class LoginComponent {
   correo: string = '';
   contrasena: string = '';
   mensaje: string = '';
-
   captcha: string = '';
-
   estado: 'login' | 'recuperar' | 'codigo' | 'nueva' = 'login';
 
   codigo: string = '';
@@ -48,131 +46,139 @@ export class LoginComponent {
     private verificaCorreoService: VerificaCorreoService
   ) {}
 
-
-
-
-ngOnInit(): void {
-  const usuario = this.authService.obtenerUsuario();
-  
-}
-
-
-
-login(): void {
-  if (!this.captcha) {
-    this.mensaje = 'Por favor, completa el CAPTCHA.';
-    return;
+  ngOnInit(): void {
+    const usuario = this.authService.obtenerUsuario();
   }
 
-  if (this.estaBloqueadoFrontend(this.correo)) {
-    return; // mensaje ya seteado adentro
+  // ✅ Sanitiza correo (quita espacios, minúsculas, y solo estructura válida)
+  private sanitizarCorreo(correo: string): string {
+    const email = correo.trim().toLowerCase();
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regexCorreo.test(email) ? email : '';
   }
 
-  this.authService.login(this.correo, this.contrasena).subscribe(
-    (res) => {
-      if (res?.success && res.token) {
-        try {
-          const decoded = jwtDecode<JwtPayload>(res.token);
-          this.usuarioTemporal = decoded;
-          this.modoVerificacion = 'login';
-          this.estado = 'codigo';
+  // ✅ Sanitiza texto plano como contraseña, código, etc.
+  private sanitizarTexto(texto: string): string {
+    return texto.trim().replace(/[<>]/g, ''); // elimina < y > para prevenir inyecciones básicas
+  }
 
-          // ✅ Limpiar intentos del frontend
-          const bloqueos = JSON.parse(localStorage.getItem('correos_bloqueados') || '{}');
-          delete bloqueos[this.correo];
-          localStorage.setItem('correos_bloqueados', JSON.stringify(bloqueos));
+  login(): void {
+    this.correo = this.sanitizarCorreo(this.correo);
+    this.contrasena = this.sanitizarTexto(this.contrasena);
 
-          this.recuperaContraService.enviarCodigo(this.correo).subscribe(
-            (res) => {
-              this.codigoGenerado = res.codigo;
-              this.mensaje = 'Se envió un código de verificación al correo.';
-            },
-            () => {
-              this.mensaje = 'No se pudo enviar el código de verificación.';
-            }
-          );
-        } catch (err) {
-          this.mensaje = 'Error al procesar el token.';
-          
+    if (!this.correo || !this.contrasena) {
+      this.mensaje = 'Correo o contraseña inválidos.';
+      return;
+    }
+
+    if (!this.captcha) {
+      this.mensaje = 'Por favor, completa el CAPTCHA.';
+      return;
+    }
+
+    if (this.estaBloqueadoFrontend(this.correo)) return;
+
+    this.authService.login(this.correo, this.contrasena).subscribe(
+      (res) => {
+        if (res?.success && res.token) {
+          try {
+            const decoded = jwtDecode<JwtPayload>(res.token);
+            this.usuarioTemporal = decoded;
+            this.modoVerificacion = 'login';
+            this.estado = 'codigo';
+
+            const bloqueos = JSON.parse(localStorage.getItem('correos_bloqueados') || '{}');
+            delete bloqueos[this.correo];
+            localStorage.setItem('correos_bloqueados', JSON.stringify(bloqueos));
+
+            this.recuperaContraService.enviarCodigo(this.correo).subscribe(
+              (res) => {
+                this.codigoGenerado = this.sanitizarTexto(res.codigo);
+                this.mensaje = 'Se envió un código de verificación al correo.';
+              },
+              () => {
+                this.mensaje = 'No se pudo enviar el código de verificación.';
+              }
+            );
+          } catch (err) {
+            this.mensaje = 'Error al procesar el token.';
+          }
+        } else {
+          const fueBloqueado = this.registrarIntentoFallidoFrontend(this.correo);
+          this.mensaje = fueBloqueado
+            ? 'Demasiados intentos con este correo. Intenta nuevamente más tarde.'
+            : 'Correo o contraseña incorrectos.';
         }
-      } else {
+      },
+      () => {
         const fueBloqueado = this.registrarIntentoFallidoFrontend(this.correo);
         this.mensaje = fueBloqueado
           ? 'Demasiados intentos con este correo. Intenta nuevamente más tarde.'
           : 'Correo o contraseña incorrectos.';
       }
-    },
-    (error) => {
-      const fueBloqueado = this.registrarIntentoFallidoFrontend(this.correo);
-      this.mensaje = fueBloqueado
-        ? 'Demasiados intentos con este correo. Intenta nuevamente más tarde.'
-        : 'Correo o contraseña incorrectos.';
+    );
+  }
+
+  estaBloqueadoFrontend(correo: string): boolean {
+    const bloqueos = localStorage.getItem('correos_bloqueados');
+    if (!bloqueos) return false;
+
+    const datos = JSON.parse(bloqueos);
+    const info = datos[correo];
+
+    if (!info || !info.bloqueado_hasta) return false;
+
+    const ahora = new Date();
+    const hasta = new Date(info.bloqueado_hasta);
+
+    if (hasta > ahora) {
+      this.mensaje = `Demasiados intentos con este correo. Intenta nuevamente después de ${hasta.toLocaleString()}`;
+      return true;
     }
-  );
-}
 
-
-estaBloqueadoFrontend(correo: string): boolean {
-  const bloqueos = localStorage.getItem('correos_bloqueados');
-  if (!bloqueos) return false;
-
-  const datos = JSON.parse(bloqueos);
-  const info = datos[correo];
-
-  if (!info || !info.bloqueado_hasta) return false;
-
-  const ahora = new Date();
-  const hasta = new Date(info.bloqueado_hasta);
-
-  if (hasta > ahora) {
-    this.mensaje = `Demasiados intentos con este correo. Intenta nuevamente después de ${hasta.toLocaleString()}`;
-    return true;
+    delete datos[correo];
+    localStorage.setItem('correos_bloqueados', JSON.stringify(datos));
+    return false;
   }
 
-  // Bloqueo expirado
-  delete datos[correo];
-  localStorage.setItem('correos_bloqueados', JSON.stringify(datos));
-  return false;
-}
+  registrarIntentoFallidoFrontend(correo: string): boolean {
+    const bloqueos = JSON.parse(localStorage.getItem('correos_bloqueados') || '{}');
 
+    if (!bloqueos[correo]) {
+      bloqueos[correo] = { intentos: 1 };
+    } else {
+      bloqueos[correo].intentos += 1;
+    }
 
-registrarIntentoFallidoFrontend(correo: string): boolean {
-  const bloqueos = JSON.parse(localStorage.getItem('correos_bloqueados') || '{}');
+    let fueBloqueado = false;
 
-  if (!bloqueos[correo]) {
-    bloqueos[correo] = { intentos: 1 };
-  } else {
-    bloqueos[correo].intentos += 1;
+    if (bloqueos[correo].intentos >= 5) {
+      const hasta = new Date();
+      hasta.setMinutes(hasta.getMinutes() + 2);
+      bloqueos[correo].bloqueado_hasta = hasta.toISOString();
+      bloqueos[correo].intentos = 0;
+      fueBloqueado = true;
+    }
+
+    localStorage.setItem('correos_bloqueados', JSON.stringify(bloqueos));
+    return fueBloqueado;
   }
-
-  let fueBloqueado = false;
-
-  if (bloqueos[correo].intentos >= 5) {
-    const hasta = new Date();
-    hasta.setMinutes(hasta.getMinutes() + 2); // ⏱ solo 2 minutos
-    bloqueos[correo].bloqueado_hasta = hasta.toISOString();
-    bloqueos[correo].intentos = 0;
-    fueBloqueado = true;
-  }
-
-  localStorage.setItem('correos_bloqueados', JSON.stringify(bloqueos));
-  return fueBloqueado;
-}
-
-
-
-
 
   resolvedCaptcha(token: string) {
-    this.captcha = token;
-    
+    this.captcha = this.sanitizarTexto(token);
   }
 
   enviarRecuperacion() {
+    this.correo = this.sanitizarCorreo(this.correo);
+    if (!this.correo) {
+      this.mensaje = 'Correo inválido.';
+      return;
+    }
+
     this.recuperaContraService.enviarCodigo(this.correo).subscribe({
       next: (res) => {
         if (res.success) {
-          this.codigoGenerado = res.codigo;
+          this.codigoGenerado = this.sanitizarTexto(res.codigo);
           this.mensaje = 'Código enviado a tu correo';
           this.estado = 'codigo';
         } else {
@@ -184,22 +190,18 @@ registrarIntentoFallidoFrontend(correo: string): boolean {
   }
 
   verificarCodigo() {
+    this.codigo = this.sanitizarTexto(this.codigo);
     if (this.codigo === this.codigoGenerado) {
       this.mensaje = 'Código verificado';
 
       if (this.modoVerificacion === 'recuperar') {
         this.estado = 'nueva';
       } else if (this.modoVerificacion === 'login') {
-        // Redirigir según el rol del token decodificado
         const rol = this.usuarioTemporal?.rol;
 
-        if (rol === 'dt') {
-          this.router.navigate(['/equipo']);
-        } else if (rol === 'administrador_equipo') {
-          this.router.navigate(['/administrar']);
-        } else if (rol === 'administrador_sistema') {
-          this.router.navigate(['/Dashboard']);
-        }
+        if (rol === 'dt') this.router.navigate(['/equipo']);
+        else if (rol === 'administrador_equipo') this.router.navigate(['/administrar']);
+        else if (rol === 'administrador_sistema') this.router.navigate(['/Dashboard']);
       }
     } else {
       this.mensaje = 'Código incorrecto';
@@ -207,6 +209,9 @@ registrarIntentoFallidoFrontend(correo: string): boolean {
   }
 
   cambiarContrasena() {
+    this.contrasenaNueva = this.sanitizarTexto(this.contrasenaNueva);
+    this.confirmarContrasena = this.sanitizarTexto(this.confirmarContrasena);
+
     if (this.contrasenaNueva !== this.confirmarContrasena) {
       this.mensaje = 'Las contraseñas no coinciden';
       return;

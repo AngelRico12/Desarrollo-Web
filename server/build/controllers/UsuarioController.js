@@ -74,8 +74,8 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(401).json({ success: false, message: 'Correo o contraseña incorrectos' });
             return;
         }
-        // Login exitoso: limpia los intentos
-        yield database_1.default.query(`UPDATE usuario SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = ?`, [usuario.id_usuario]);
+        // Login exitoso: limpia los intentos y actualiza ultima_sesion
+        yield database_1.default.query(`UPDATE usuario SET intentos_fallidos = 0, bloqueado_hasta = NULL, ultima_sesion = NOW() WHERE id_usuario = ?`, [usuario.id_usuario]);
         const token = jsonwebtoken_1.default.sign({
             id_usuario: usuario.id_usuario,
             nombre: usuario.nombre,
