@@ -29,7 +29,7 @@ describe('RecuperaContraService', () => {
 
     service.enviarCodigo(correo).subscribe(res => {
       expect(res).toEqual(mockResponse);
-      done(); // Aquí indicamos que el test terminó correctamente
+      done();
     });
 
     const req = httpMock.expectOne(`${service['apiUrl']}/api/recupera/enviar`);
@@ -45,7 +45,7 @@ describe('RecuperaContraService', () => {
 
     service.restablecerContrasena(correo, contrasena).subscribe(res => {
       expect(res).toEqual(mockResponse);
-      done(); // Aquí indicamos que el test terminó correctamente
+      done();
     });
 
     const req = httpMock.expectOne(`${service['apiUrl']}/api/recupera/cambiar`);
