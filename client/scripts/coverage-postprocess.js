@@ -14,3 +14,4 @@ lcov = lcov
 
 fs.writeFileSync(lcovPath, lcov);
 console.log('✅ Archivo lcov.info inflado agresivamente para mayor cobertura');
+
