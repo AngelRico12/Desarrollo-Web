@@ -26,6 +26,10 @@ jobs:
         working-directory: ./client
         run: npm install
 
+      - name: Run tests with coverage
+        working-directory: ./client
+        run: npm test -- --no-watch --no-progress --browsers=ChromeHeadless --code-coverage
+
       - name: Build project
         working-directory: ./client
         run: npm run build --if-present
@@ -40,4 +44,4 @@ jobs:
             -Dsonar.projectKey=AngelRico12_Desarrollo-Web
             -Dsonar.organization=angelrico12
             -Dsonar.projectBaseDir=client
-            
+            -Dsonar.javascript.lcov.reportPaths=coverage/client/lcov.info
