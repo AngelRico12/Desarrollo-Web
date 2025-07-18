@@ -113,10 +113,6 @@ verificarCorreoEnTiempoReal() {
 }
 
 
-
-
-
-
   onSubmit(form: NgForm): void {
   if (form.invalid) {
     alert('Formulario inválido. Revisa los campos obligatorios.');

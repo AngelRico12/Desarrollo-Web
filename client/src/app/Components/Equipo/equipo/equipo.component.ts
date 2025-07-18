@@ -153,32 +153,35 @@ export class EquipoComponent {
 
 
 
-  ngOnInit(): void {
+ngOnInit(): void {
+  const usuario = this.authService.obtenerUsuario(); // obtenemos usuario
+
+  if (!usuario) {
+    console.error('No se pudo obtener el usuario desde el token.');
+    return; // salimos antes de hacer cualquier petición
+  }
+
+  if (!usuario.nombre) {
+    console.error('El usuario no tiene un nombreUsuario asociado.');
+    return; // salimos antes de hacer cualquier petición
+  }
+
+  if (!usuario.id_club) {
+    console.error('El usuario no tiene un club asociado.');
+    return; // salimos antes de hacer cualquier petición
+  }
+
+  // Solo si el usuario es válido, hacemos las llamadas
   this.obtenerCategoriaYClub();
   this.obtenerIdUsuarioYHacerSolicitud();
   this.obtenerEquipoPorUsuario();
 
-  const usuario = this.authService.obtenerUsuario(); // ← usamos el servicio
+  // Si necesitas llamar obtenerCategoria y obtenerNombreClub con parámetros
+  this.obtenerCategoria(usuario.nombre);
+  this.obtenerNombreClub(usuario.id_club);
 
-  if (usuario) {
-    if (usuario.nombre) {
-      // Llamada al método para obtener la categoría
-      this.obtenerCategoria(usuario.nombre);
-    } else {
-      console.error('El usuario no tiene un nombreUsuario asociado.');
-    }
-
-    if (usuario.id_club) {
-      // Llamada al método para obtener el nombre del club
-      this.obtenerNombreClub(usuario.id_club);
-    } else {
-      console.error('El usuario no tiene un club asociado.');
-    }
-  } else {
-    console.error('No se pudo obtener el usuario desde el token.');
-  }
-
-  if (this.jugadorRecuperado.redes_sociales) {
+  // Procesar redes sociales si existen
+  if (this.jugadorRecuperado && this.jugadorRecuperado.redes_sociales) {
     const redes = this.jugadorRecuperado.redes_sociales.split(' - ');
     redes.forEach((red) => {
       if (red.startsWith('facebook:')) {

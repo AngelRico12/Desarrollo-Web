@@ -30,7 +30,7 @@ const routes: Routes = [
   { path: 'inicio', component: InicioComponent},
 
   { path: 'mapa-sitio', component: MapaSitioComponent},
-  { path: 'Perfil', component: EditarPerfilComponent},
+  { path: 'Perfil', component: EditarPerfilComponent, canActivate: [AuthGuard], data: { roles: ['administrador_equipo'] }},
   {
   path: 'dashboard',
   component: LayoutComponent, 

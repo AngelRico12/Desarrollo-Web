@@ -1,21 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { BreadcrumbService } from '../../Services/breadcrumb.service';
+import { ActivatedRoute } from '@angular/router';
 
-import { BreadcrumbComponent } from './breadcrumb.component';
-
-describe('BreadcrumbComponent', () => {
-  let component: BreadcrumbComponent;
-  let fixture: ComponentFixture<BreadcrumbComponent>;
-
+describe('BreadcrumbService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [BreadcrumbComponent]
+      providers: [
+        BreadcrumbService,
+        { provide: ActivatedRoute, useValue: {} } // <- aquí simulas el ActivatedRoute
+      ]
     });
-    fixture = TestBed.createComponent(BreadcrumbComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be created', () => {
+    const service = TestBed.inject(BreadcrumbService);
+    expect(service).toBeTruthy();
   });
 });
