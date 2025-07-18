@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUsuario = exports.getUsuarioById = void 0;
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const database_1 = __importDefault(require("../database"));
 // Obtener usuario por ID
 const getUsuarioById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,8 +31,8 @@ const getUsuarioById = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 id_usuario,
                 nombre,
                 correo,
-                contrasena: contraseña
-            }
+                contrasena: contraseña, // opcional: usa 'contrasena' para front
+            },
         });
     }
     catch (error) {
@@ -40,18 +41,34 @@ const getUsuarioById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getUsuarioById = getUsuarioById;
-// Actualizar perfil
+// Actualizar usuario
 const updateUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const campos = req.body;
     try {
-        const camposActualizables = Object.keys(campos).filter(key => ['nombre', 'correo', 'contrasena'].includes(key));
-        const valores = camposActualizables.map(k => campos[k]);
+        const camposPermitidos = ['nombre', 'correo', 'contrasena'];
+        const camposActualizables = Object.keys(campos).filter(key => camposPermitidos.includes(key));
         if (camposActualizables.length === 0) {
             res.status(400).json({ success: false, message: 'No hay campos válidos para actualizar' });
             return;
         }
-        const sql = `UPDATE usuario SET ${camposActualizables.map(k => `${k === 'contrasena' ? 'contraseña' : k} = ?`).join(', ')} WHERE id_usuario = ?`;
+        const valores = [];
+        for (const key of camposActualizables) {
+            if (key === 'contrasena') {
+                if (typeof campos[key] !== 'string' || campos[key].trim() === '') {
+                    res.status(400).json({ success: false, message: 'Contraseña inválida' });
+                    return;
+                }
+                const hash = yield bcryptjs_1.default.hash(campos[key], 10);
+                valores.push(hash);
+            }
+            else {
+                valores.push(campos[key]);
+            }
+        }
+        const sql = `UPDATE usuario SET ${camposActualizables
+            .map(k => (k === 'contrasena' ? 'contraseña = ?' : `${k} = ?`))
+            .join(', ')} WHERE id_usuario = ?`;
         yield database_1.default.query(sql, [...valores, id]);
         res.json({ success: true, message: 'Campo(s) actualizado(s) correctamente' });
     }

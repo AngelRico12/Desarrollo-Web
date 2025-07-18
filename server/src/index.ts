@@ -3,10 +3,10 @@ import path from 'path';
 import serveIndex from 'serve-index';
 import morgan from 'morgan';
 import cors from 'cors';
-
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import https from 'https';
 import fs from 'fs';
-
 import indexRoutes from './routes/indexRoutes';
 import authRoutes from './routes/authRoutes';
 import clubRoutes from './routes/clubRoutes';
@@ -36,10 +36,34 @@ class Server {
 
     private config(): void {
         this.app.set('port', process.env.PORT || 3000);
+
         this.app.use(morgan('dev'));
-        this.app.use(cors());
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: false }));
+
+        // Seguridad HTTP headers con helmet
+        this.app.use(helmet());
+
+        // CORS para localhost HTTPS en puertos 3000 y 4200
+        this.app.use(cors({
+            origin: [
+                'https://localhost:3000',
+                'https://localhost:4200'
+            ],
+            optionsSuccessStatus: 200
+        }));
+
+        // Limitar tamaño de payload JSON y urlencoded
+        this.app.use(express.json({ limit: '10kb' }));
+        this.app.use(express.urlencoded({ extended: false, limit: '10kb' }));
+
+        // Rate limiting para evitar ataques DoS
+        const limiter = rateLimit({
+            windowMs: 15 * 60 * 1000, // 15 minutos
+            max: 100, // máximo 100 peticiones por IP
+            standardHeaders: true,
+            legacyHeaders: false,
+            message: 'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde.'
+        });
+        this.app.use(limiter);
 
         const uploadsPath = path.join(__dirname, '../uploads');
         this.app.use('/uploads', express.static(uploadsPath), serveIndex(uploadsPath, { icons: true }));
