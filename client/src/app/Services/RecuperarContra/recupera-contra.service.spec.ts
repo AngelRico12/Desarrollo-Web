@@ -11,7 +11,6 @@ describe('RecuperaContraService', () => {
       imports: [HttpClientTestingModule],
       providers: [RecuperaContraService]
     });
-
     service = TestBed.inject(RecuperaContraService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -24,34 +23,34 @@ describe('RecuperaContraService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('debería enviar el código al correo', () => {
+  it('debería enviar el código al correo', (done) => {
     const correo = 'test@example.com';
     const mockResponse = { mensaje: 'Código enviado' };
 
     service.enviarCodigo(correo).subscribe(res => {
       expect(res).toEqual(mockResponse);
+      done(); // Aquí indicamos que el test terminó correctamente
     });
 
     const req = httpMock.expectOne(`${service['apiUrl']}/api/recupera/enviar`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ correo });
-
     req.flush(mockResponse);
   });
 
-  it('debería restablecer la contraseña', () => {
+  it('debería restablecer la contraseña', (done) => {
     const correo = 'test@example.com';
     const contrasena = '123456';
     const mockResponse = { mensaje: 'Contraseña actualizada' };
 
     service.restablecerContrasena(correo, contrasena).subscribe(res => {
       expect(res).toEqual(mockResponse);
+      done(); // Aquí indicamos que el test terminó correctamente
     });
 
     const req = httpMock.expectOne(`${service['apiUrl']}/api/recupera/cambiar`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ correo, contrasena });
-
     req.flush(mockResponse);
   });
 });
