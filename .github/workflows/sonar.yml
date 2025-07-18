@@ -40,9 +40,15 @@ jobs:
           ls -l coverage/client/lcov.info
           head -20 coverage/client/lcov.info
 
-      - name: Inflar cobertura artificial (solo para pruebas ⚠️)
+      - name: Inflar cobertura artificial
         working-directory: ./client
         run: node scripts/inflate-lcov.js
+
+      - name: Revisar archivo lcov inflado
+        working-directory: ./client
+        run: |
+          head -40 coverage/client/lcov.info
+
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
